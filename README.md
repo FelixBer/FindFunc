@@ -1,7 +1,7 @@
 # FindFunc: Advanced Filtering/Finding of Functions in IDA PRO
 
 
-FindFunc is an IDA PRO plugin to find code functions that contain a certain assembly or byte pattern, refernce a certain name or string, or conform to various other constraints. This is not a competitor to tools like diphora or binnavi, but it is ideal to find a known function in a new binary for cases where classical bindiffing fails.
+FindFunc is an IDA PRO plugin to find code functions that contain a certain assembly or byte pattern, reference a certain name or string, or conform to various other constraints. This is not a competitor to tools like Diaphora or BinNavi, but it is ideal to find a known function in a new binary for cases where classical bindiffing fails.
 
 
 ![ffmain](./img/ffmain.png)
@@ -10,7 +10,7 @@ FindFunc is an IDA PRO plugin to find code functions that contain a certain asse
 ## Filtering with Rules
 
 
-The main functionality of FindFunc is letting the user specify a set of "Rules" or constraints that a code function in IDA PRO has to satisfy. FF will then find and list all functions that satisfy ALL rules (so currently all Rules are in an AND-conjunction). Exception: Rules can be "inverted" to be negative matchs. Such rules thus conform to "AND NOT".
+The main functionality of FindFunc is letting the user specify a set of "Rules" or constraints that a code function in IDA PRO has to satisfy. FF will then find and list all functions that satisfy ALL rules (so currently all Rules are in an AND-conjunction). Exception: Rules can be "inverted" to be negative matches. Such rules thus conform to "AND NOT".
 
 FF will schedule the rules in a smart order to minimize processing time.
 Feature overview:
@@ -65,7 +65,7 @@ With large databases it is a good idea to first cut down the candidate-functions
 Rule for filtering function based on them containing a given assembly code snippet.
 The snippet may contain many instructions. Function chunks are supported.
 
-Supports special wildlcard matching, in addition to classic assembly:
+Supports special wildcard matching, in addition to classic assembly:
 
 * "pass" -> matches any instruction with any operands
 * "mov* any,any" -> matches instructions with mnemonic "mov*" (e.g. mov, movzx, ...)
@@ -103,12 +103,12 @@ Examples for instructions matching immediate value 0x100:
     push 0x100
 
 
-Note: IDA performas extensive matching of any size and any position of the immediate. If you know it to be of a specific width of 4 or 8 bytes, a byte pattern can be a little faster.
+Note: IDA performs extensive matching of any size and any position of the immediate. If you know it to be of a specific width of 4 or 8 bytes, a byte pattern can be a little faster.
 
 ### Byte Pattern
 
 The function must contain the given byte pattern at least once.
-The pattern is of the same format as IDA's binary search, and thus supports wildcards - the perfect match for the avanced-copy feature!
+The pattern is of the same format as IDA's binary search, and thus supports wildcards - the perfect match for the advanced-copy feature!
 
 Examples:
 
@@ -130,7 +130,7 @@ Examples:
 * "TestStr*" -> function must reference a string starting with 'TestStr (e.g. TestString, TestStrong) at least once (casing ignored)
 
 
-Note: String matching is fast and a good choice to cut down candiates quickly!
+Note: String matching is fast and a good choice to cut down candidates quickly!
 
 ### Name Reference
 
@@ -144,7 +144,7 @@ Examples:
 * "mem*" -> function must reference a location starting with "mem" (memset, memcpy, memcmp) at least once
 
 
-Note: Name matching is very fast and ideal to cut down candiates quickly!
+Note: Name matching is very fast and ideal to cut down candidates quickly!
 
 ### Function Size
 
@@ -153,7 +153,7 @@ Data is entered as a string of the forms "min,max".
 The size of a function includes all of its chunks.
 
 
-Note: Function size matching is very fast and ideal to cut down candiates quickly!
+Note: Function size matching is very fast and ideal to cut down candidates quickly!
 
 
 
@@ -174,7 +174,7 @@ For ease of use FF can be used via the following keyboard shortcuts:
 
 Further GUI usage
 
-* Rules can be edite by double-clicking the Data column
+* Rules can be edited by double-clicking the Data column
 * Rules can be inverted (negative match) by double clicking the invert-match column
 * Rules can be enabled/disabled by double clicking the enabled-column
 * Sorting is supported both for Rule-List and Result-List
@@ -187,7 +187,7 @@ Further GUI usage
 
 ## Advanced Binary Copy
 
-Frequently we want to search for binary patterns of assembly, but without hardcoded  adresses and values (immediates),
+Frequently we want to search for binary patterns of assembly, but without hardcoded  addresses and values (immediates),
 or even only the actual opcodes of the instruction. FindFunc makes this easy by adding three copy options to the disassembly-popupmenu:
 
 
@@ -270,7 +270,7 @@ A brief word on performance:
 * Regex-rule
 * string/name: casing option
 * allow direct pasting of byte pattern
-* automatically convert immedate rules to byte pattern if appliccable?
+* automatically convert immediate rules to byte pattern if applicable?
 * settings: case sensitivity, string types, range, ...
 * Hexray rules?
 * persist state across IDA restarts
