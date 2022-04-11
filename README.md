@@ -79,11 +79,11 @@ more examples:
 
     mov r64, [r32 * 8 + 0x100]
     mov r, [r * 8 - 0x100]
-    mov r64, [r32 * 8 + c]
+    mov r64, [r32 * 8 + imm]
     pass
     mov r, word [eax + r32 * 8 - 0x100]
     any r64, r64
-    push c
+    push imm
     push any
 
 **Gotchas:** Be careful when copying over assembly from IDA. Immediate values are expected to be in decimal or hex with 0x-prefix (0x12), while IDA gives them with h-suffix (12h) which is not supported. Also IDA mingles local variable and other information into the instruction which leads to matching failure.
@@ -149,7 +149,7 @@ Note: Name matching is very fast and ideal to cut down candidates quickly!
 ### Function Size
 
 The size of the function must be within the given limit: "min <= functionsize < max"
-Data is entered as a string of the forms "min,max".
+Data is entered as a string of the form "min,max".
 The size of a function includes all of its chunks.
 
 
@@ -230,7 +230,7 @@ will be copied as
 
     b8 ?? ?? ?? ?? 68 ?? ?? ?? ?? 66 89 ?? ?? ??
 
-Note: This is a "best effort" using IDA's API and not a dedicated x86-disasm library, thus there may be few cases where it only works partially.
+Note: This is a "best effort" using IDA's API, thus there may be few cases where it only works partially.
 For a 100% correct solution we would have to ship a dedicated x86 disasm library.
 
 
@@ -259,7 +259,8 @@ A brief word on performance:
 
 ### Todo (unordered):
 
-* support IDA docking
+* fix IDA docking
+* jcc pseudo-mnemonic
 * support or warn if asm is entered in IDA format (eg "12h" instead of 0x12)
 * Code Rule with only mnemonic constraint (and any operands)
 * Allow named locations in CodeRules ('call memset')
