@@ -648,7 +648,7 @@ class MatcherIda:
             for r in rcode:
                 r.clearcurrent()
 
-    def do_match(self, rules: List[Rule]) -> List[Func]:
+    def do_match(self, rules: List[Rule], limitto: List[int] = None) -> List[Func]:
         """
         Main function for filtering Functions based on the given Rules.
 
@@ -730,7 +730,9 @@ class MatcherIda:
         # initial collection
         # pick a positive rule to cut down initial matches as drastically as possible
 
-        if pos_name_rules:
+        if limitto:
+            candidatas = limitto
+        elif pos_name_rules:
             candidatas = self.match_initial_pos_names([pos_name_rules[0]])
             pos_name_rules = pos_name_rules[1:]
         elif pos_fsize_rules:

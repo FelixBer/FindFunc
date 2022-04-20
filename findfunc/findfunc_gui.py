@@ -60,6 +60,7 @@ class FindFuncTab(QWidget):
         self.ui.btnaddcode.clicked.connect(self.addcoderule)
         self.ui.btnfuncsize.clicked.connect(self.addfsizerule)
         self.ui.btnsearch.clicked.connect(self.dosearchclicked)
+        self.ui.btnrefine.clicked.connect(self.dorefineclicked)
         # enable sorting
         self.ui.tableview.setSortingEnabled(True)
         self.ui.tableresults.setSortingEnabled(True)
@@ -333,9 +334,9 @@ class FindFuncTab(QWidget):
         except Exception as ex:
             QMessageBox.error(self, "Error saving file", str(ex))
 
-    def dosearchclicked(self):
+    def _dosearch(self, limitto: List[int]):
         """
-        Search was clicked, perform search
+        perform search or refine results given in limitto
         """
         if not inida:
             msg = "This is an IDA PRO plugin, copy findfuncmain.py and findfunc folder to IDA plugin dir!"
@@ -347,8 +348,8 @@ class FindFuncTab(QWidget):
         if self.matcher.info.profile:
             profiler.enable()
         starttime = time.time()
-        idaapi.show_wait_box("FindFunc: Finding Functions... ") # todo: maybe use ida_kernwin.replace_wait_box
-        results = self.matcher.do_match(self.model.mydata)
+        idaapi.show_wait_box("FindFunc: Finding Functions... ")  # todo: maybe use ida_kernwin.replace_wait_box
+        results = self.matcher.do_match(self.model.mydata, limitto)
         idaapi.hide_wait_box()
         self.resultmodel.set_items([ResultModel.Result(fn.va, fn.size, len(fn.chunks) - 1, fn.name, fn.lastmatch) for fn in results])
         self.ui.tableresults.resizeColumnsToContents()
@@ -363,7 +364,20 @@ class FindFuncTab(QWidget):
             print(stream.getvalue())
         if self.matcher.wascancelled:
             self.matcher.wascancelled = False
-            QMessageBox.warning(None, "Cancelled", "Search was cancelled.")
+            QMessageBox.warning(None, "Canceled", "Search was canceled.")
+
+    def dosearchclicked(self):
+        """
+        perform new search
+        """
+        self._dosearch([])
+
+    def dorefineclicked(self):
+        """
+        refine existing results, or new search if no current results
+        """
+        limitto = [r.va for r in self.resultmodel.mydata]
+        self._dosearch(limitto)
 
 
 class TabWid(QWidget):
