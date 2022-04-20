@@ -337,13 +337,13 @@ class RuleCode(Rule):
     "mov eax, r32" -> matches any instruction with mmn "mov", first operand register eax
                         and second operand any 32-bit register.
                         Analogue: r for any register, r8/r16/r32/r64
-    "mov r64, c"   -> matches any move of a constant to a 64bit register
+    "mov r64, imm"   -> matches any move of a constant to a 64bit register
     more examples:
     mov r64, [r32 * 8 + 0x100]
     mov r64, [r32 * 8 - 0x100]
-    mov r64, [r32 * 8 + c]
+    mov r64, [r32 * 8 + imm]
     mov r, [r32 + r32 * 8 - 0x100]
-    push c
+    push imm
     push r
     """
     def __init__(self, instrlist):
