@@ -162,6 +162,7 @@ class Func:
         self.va = 0
         self.end = 0
         self.size = 0  # size including chunks
+        self.lastmatch = 0  # last rule match on this va
         self.name = ""
         self.chunks = []
 
@@ -227,6 +228,7 @@ class Func:
             func.end = idc.get_func_attr(ref, idc.FUNCATTR_END)
             func.chunks = list(idautils.Chunks(func.va))
             func.size = idaapi.calc_func_size(idaapi.get_func(func.va))
+            func.lastmatch = ref
             deduplicate.add(func.va)
             yield func
 
@@ -327,6 +329,8 @@ class MatcherIda:
                     isinfunc = func.contains_adr(ref)
                     if isinfunc:
                         passed = not r.inverted
+                        if passed:
+                            func.lastmatch = ref
                         break
                 else:
                     passed = r.inverted
@@ -354,6 +358,8 @@ class MatcherIda:
                     isinfunc = func.contains_adr(ref)
                     if isinfunc:
                         passed = not r.inverted
+                        if passed:
+                            func.lastmatch = ref
                         break
                 else:
                     passed = r.inverted
@@ -373,6 +379,8 @@ class MatcherIda:
                     isinfunc = hit != idaapi.BADADDR
                     if isinfunc:
                         passed = not r.inverted
+                        if passed:
+                            func.lastmatch = hit
                         break
                 else:
                     passed = r.inverted
@@ -442,30 +450,49 @@ class MatcherIda:
         :return: Nothing
         """
         for r in rules:
-            if r.is_satisfied():
-                continue
-            curins = r.curinstr()
-            if curins.mmn == "pass":  # matches any instruction
-                r.advance()
-                continue
-            if len(idains.ops) != len(curins.ops):
-                r.clearcurrent()
-                continue
+            self._check_instr_on_rule(idains, r)
+
+    def _check_instr_on_rule(self, idains, rules: RuleCode):
+        """
+        Checks a disassembled instruction against a list of CodeRules
+        If the instruction satisfies the current instruction of the Rule,
+        the Rules state is advanced to the next instruction to be matched.
+        :param idains: the disassembled instruction
+        :param rules: a list of CodeRules
+        :return: Nothing
+        """
+        r = rules
+        if r.is_satisfied():
+            return
+        curins = r.curinstr()
+        if curins.mmn == "pass":  # matches any instruction
+            r.advance()
+            return
+        if len(curins.ops) == 0:
             if not fnmatch.fnmatch(idains.mmn, curins.mmn) and curins.mmn != "any":  # match mmn
                 r.clearcurrent()
-                continue
+            else:
+                r.advance()
+            return
+
+        if len(idains.ops) != len(curins.ops):
+            r.clearcurrent()
+            return
+        if not fnmatch.fnmatch(idains.mmn, curins.mmn) and curins.mmn != "any":  # match mmn
+            r.clearcurrent()
+            return
+        if self.info.debug:
+            print(f"---\nprep: {idains}    ==    {curins}")
+        passed = True
+        for opx, opy in zip(idains.ops, curins.ops):  # match operands
             if self.info.debug:
-                print(f"---\nprep: {idains}    ==    {curins}")
-            passed = True
-            for opx, opy in zip(idains.ops, curins.ops):  # match operands
-                if self.info.debug:
-                    print(f"{opx}    ==    {opy}    ->  {self._check_op_eq(opx, opy)}")
-                if not self._check_op_eq(opx, opy):
-                    r.clearcurrent()
-                    passed = False
-                    break
-            if passed:
-                r.advance()  # advance rule state to next instruction to be checked
+                print(f"{opx}    ==    {opy}    ->  {self._check_op_eq(opx, opy)}")
+            if not self._check_op_eq(opx, opy):
+                r.clearcurrent()
+                passed = False
+                break
+        if passed:
+            r.advance()  # advance rule state to next instruction to be checked
 
     def _ida_op_t_to_wcop(self, opida, adrsizeoverride) -> InstrWildcardOp:
         """
@@ -580,6 +607,8 @@ class MatcherIda:
                     isinfunc = self._idains_contains_imm(ins, r.imm)
                     if isinfunc:
                         passed = not r.inverted
+                        if passed:
+                            func.lastmatch = ins.ea
                         break
                 else:
                     passed = r.inverted
@@ -605,7 +634,11 @@ class MatcherIda:
                             r.clearcurrent()
                     continue
                 myins = self._idains_to_myins(ins)
-                self._check_instr(myins, rcode)
+                for r in [x for x in rcode if not x.is_satisfied()]:
+                    self._check_instr_on_rule(myins, r)
+                    if r.is_satisfied():
+                        func.lastmatch = myins.va
+                #self._check_instr(myins, rcode)
             for r in rcode:
                 if r.is_satisfied() == r.inverted:
                     break  # one mismatching rule is enough

@@ -233,11 +233,15 @@ class FindFuncTab(QWidget):
         """
         if not index.isValid():
             return None
+        col = index.column()
         row = index.row()
         mydata = index.model().mydata
         if row >= len(mydata):
             return
-        va = mydata[row].va
+        # jump to function start if va column clicked, else to last match
+        va = mydata[row].va if ResultModel.col_va == col else mydata[row].lastmatch
+        if not va:
+            va = mydata[row].va
         findfunc.matcher_ida.gui_jump_to_va(va)
 
     def tableRulesDoubleClick(self, index):
@@ -346,7 +350,7 @@ class FindFuncTab(QWidget):
         idaapi.show_wait_box("FindFunc: Finding Functions... ") # todo: maybe use ida_kernwin.replace_wait_box
         results = self.matcher.do_match(self.model.mydata)
         idaapi.hide_wait_box()
-        self.resultmodel.set_items([ResultModel.Result(fn.va, fn.size, len(fn.chunks) - 1, fn.name) for fn in results])
+        self.resultmodel.set_items([ResultModel.Result(fn.va, fn.size, len(fn.chunks) - 1, fn.name, fn.lastmatch) for fn in results])
         self.ui.tableresults.resizeColumnsToContents()
         timetaken = time.time() - starttime
         print("Results found: ", len(results))

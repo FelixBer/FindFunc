@@ -21,11 +21,12 @@ class ResultModel(QtCore.QAbstractTableModel):
         Helper class to efficiently hold the information about a matched function
         shown in result table.
         """
-        def __init__(self, va, size, chunks, name):
+        def __init__(self, va, size, chunks, name, lastmatch):
             self.va = va
             self.size = size
             self.chunks = chunks
             self.name = name
+            self.lastmatch = lastmatch
 
     def __init__(self):
         QtCore.QAbstractTableModel.__init__(self)
