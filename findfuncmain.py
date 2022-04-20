@@ -18,7 +18,7 @@ except:
     print("not in ida")
 
 if inida:
-    from findfunc.advanced_copy import copy_all_bytes, copy_bytes_no_imm, copy_only_opcodes
+    from findfunc.advanced_copy import copy_all_bytes, copy_bytes_no_imm, copy_only_opcodes, copy_only_disasm
 
 
 __AUTHOR__ = 'feber'
@@ -59,6 +59,7 @@ class FindFunc(idaapi.plugin_t):
     ACTION_COPY_BYTES = "feber:copy_bytes"
     ACTION_COPY_OPC = "feber:copy_opc"
     ACTION_COPY_NO_IMM = "feber:copy_no_imm"
+    ACTION_COPY_DISASM = "feber:copy_disasm"
 
     def init(self):
         # see advanced_copy for details
@@ -86,6 +87,15 @@ class FindFunc(idaapi.plugin_t):
             ACActionHandler(copy_bytes_no_imm),
             "ctrl+alt+i",  # hotkey
             "copy instruction bytes, wildcard out all immediates",
+            31
+        )
+        assert idaapi.register_action(action_desc), "Action registration failed"
+        action_desc = idaapi.action_desc_t(
+            self.ACTION_COPY_DISASM,
+            "copy disasm",
+            ACActionHandler(copy_only_disasm),
+            "ctrl+alt+d",  # hotkey
+            "copy disasm lines only",
             31
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
@@ -159,5 +169,10 @@ class ACUiHook(idaapi.UI_Hooks):
                 widget,
                 popup,
                 FindFunc.ACTION_COPY_OPC,
+            )
+            idaapi.attach_action_to_popup(
+                widget,
+                popup,
+                FindFunc.ACTION_COPY_DISASM,
             )
         return 0

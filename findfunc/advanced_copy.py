@@ -282,6 +282,31 @@ def copy_only_opcodes():
         print("copy_only_opcodes: ", result)
     copy_to_clip(result)
 
+
+def copy_only_disasm():
+    """
+    Copy all instructions as diassembly as provided by IDA
+    """
+    start = idc.read_selection_start()
+    end = idc.read_selection_end()
+    if idaapi.BADADDR in (start, end):
+        ea = idc.here()
+        start = idaapi.get_item_head(ea)
+        end = idaapi.get_item_end(ea)
+    result = ""
+    processed = 0
+    while start + processed < end:
+        ins = idc.GetDisasm(start + processed)
+        size = idc.next_head(start + processed) - (start + processed)
+        if not size:
+            size = 1
+        processed += size
+        if ins:
+            result += ins + "\n"
+    if logresult:
+        print("copy_only_disasm: ", result)
+    copy_to_clip(result)
+
 ###
 
 # https://wiki.osdev.org/X86-64_Instruction_Encoding#VEX.2FXOP_opcodes
