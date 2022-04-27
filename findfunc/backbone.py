@@ -319,6 +319,14 @@ class RuleBytePattern(Rule):
     def __repr__(self):
         return f"RuleBytePattern(\"{self.pattern}\")"
 
+    @staticmethod
+    def is_raw_pattern(pattern: str) -> bool:
+        try:
+            pattern = pattern.replace(" ", "").replace("??", "")
+            return len(bytes.fromhex(pattern)) > 1 and len(pattern) > 2
+        except ValueError:
+            return False
+
     def get_data(self):
         return self.pattern
 
@@ -415,6 +423,9 @@ def from_clipboard_string(data: str) -> List[Rule]:
     :param data: list of rules as string
     :return: string as list of rules
     """
+    # allow pasting hexstring directly
+    if RuleBytePattern.is_raw_pattern(data):
+        return [RuleBytePattern(data)]
     ret = []
     for string in data.split("\n"):
         tokens = string.split(" ")[:3]  # 3 -> RuleName enabled inverted
