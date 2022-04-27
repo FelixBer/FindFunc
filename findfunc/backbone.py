@@ -198,13 +198,13 @@ class RuleFuncSize(Rule):
         return f"RuleFuncSize({self.min},{self.max})"
 
     def get_data(self):
-        return f"{self.min} <= x < {self.max}"
+        return f"{self.min} <= x <= {self.max}"
 
     def set_data(self, data: str):
         """
         Parse user data in form "x,y" where x is minimum function size and
         y maximum.
-        The rule will match any function whose size is x <= size < y.
+        The rule will match any function whose size is x <= size <= y.
         :param data: input data
         :return: Nothing
         """
@@ -224,7 +224,7 @@ class RuleFuncSize(Rule):
         :param size: size of functio to check
         :return: True if satisfied, False otherwise
         """
-        return self.min <= size < self.max
+        return self.min <= size <= self.max
 
 
 class RuleImmediate(Rule):
