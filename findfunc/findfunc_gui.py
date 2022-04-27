@@ -239,8 +239,8 @@ class FindFuncTab(QWidget):
         mydata = index.model().mydata
         if row >= len(mydata):
             return
-        # jump to function start if va column clicked, else to last match
-        va = mydata[row].va if ResultModel.col_va == col else mydata[row].lastmatch
+        # jump to function start if function-name column clicked, else to last match
+        va = mydata[row].va if ResultModel.col_label == col else mydata[row].lastmatch
         if not va:
             va = mydata[row].va
         findfunc.matcher_ida.gui_jump_to_va(va)
