@@ -433,7 +433,7 @@ def from_clipboard_string(data: str) -> List[Rule]:
         rulename = tokens[0]
         enabled = tokens[1].lower() == "true"
         inverted = tokens[2].lower() == "true"
-        string = string[len(" ".join(tokens))+1:]
+        string = string[len(" ".join(tokens)) + 1:]
         rule = None
         if rulename == "RuleFuncSize":
             rule = RuleFuncSize()

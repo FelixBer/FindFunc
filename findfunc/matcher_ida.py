@@ -474,7 +474,6 @@ class MatcherIda:
             else:
                 r.advance()
             return
-
         if len(idains.ops) != len(curins.ops):
             r.clearcurrent()
             return
