@@ -68,6 +68,8 @@ class InstrWildcard(object):
         if var == "imm":
             return var
         try:
+            if str(var).endswith('h'):
+                return int(str(var)[:-1], 16)
             r = int(var)
         except ValueError:
             try:
