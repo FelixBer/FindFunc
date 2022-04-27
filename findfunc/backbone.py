@@ -88,12 +88,9 @@ class InstrWildcard(object):
         """
         result = InstrWildcard()
         idx = ins.find(' ')
-        if idx == -1:
-            if ins.startswith("pass"):
-                result.mmn = "pass"
-                return result
-            else:
-                raise ValueError("error parsing instruction: must have operands or 'pass'")
+        if idx == -1:  # no args
+            result.mmn = ins
+            return result
         result.mmn = ins[0:idx]  # doesnt support prefixes
         result.mmn = "".join(result.mmn.split())  # remove all whitespace
         ins = ins[idx:]
