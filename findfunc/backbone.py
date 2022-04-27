@@ -102,16 +102,16 @@ class InstrWildcard(object):
             if '[' in o:
                 if "qword" in o:
                     op.size = 8
-                    o = o.replace("qword", "")
+                    o = o.replace("qwordptr", "").replace("qword", "")
                 elif "dword" in o:
                     op.size = 4
-                    o = o.replace("dword", "")
+                    o = o.replace("dwordptr", "").replace("dword", "")
                 elif "word" in o:
                     op.size = 2
-                    o = o.replace("word", "")
+                    o = o.replace("wordptr", "").replace("word", "")
                 elif "byte" in o:
                     op.size = 1
-                    o = o.replace("byte", "")
+                    o = o.replace("byteptr", "").replace("byte", "")
                 else:
                     op.size = None  # determining right size is very complex (movzx, etc.)
                 op.deref = True
