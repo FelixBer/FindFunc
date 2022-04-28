@@ -24,6 +24,8 @@ Feature overview:
 * Copying rules between Tabs via clipboard (same format as file format)
 * Advanced copying of instruction bytes (all, opcodes only, all except immediates)
 
+Button "Search Functions" clears existing results and starts a fresh search,
+"Refine Results" considers only results of the previous search.
 
 ### Advanced Binary Copying
 
@@ -63,9 +65,9 @@ With large databases it is a good idea to first cut down the candidate-functions
 
 
 Rule for filtering function based on them containing a given assembly code snippet.
-The snippet may contain many instructions. Function chunks are supported.
-
-Supports special wildcard matching, in addition to classic assembly:
+This is NOT a text-search for IDAs textual disassembly representation, but rather performs advanced matching of the underlying instruction.
+The snippet may contain many consecutive instructions, one per line. Function chunks are supported.
+Supports special wildcard matching, in addition to literal assembly:
 
 * "pass" -> matches any instruction with any operands
 * "mov* any,any" -> matches instructions with mnemonic "mov*" (e.g. mov, movzx, ...)
@@ -74,6 +76,7 @@ Supports special wildcard matching, in addition to classic assembly:
     * Analogue: r for any register, r8/r16/r32/r64 for register of a specific width, "imm" for any immediate
 * "mov r64, imm" -> matches any move of a constant to a 64bit register
 * "any r64,r64" -> matches any operation between two 64bit registers
+* mov -> matches any instruction of mov mnemonic
 
 more examples:
 
@@ -86,7 +89,9 @@ more examples:
     push imm
     push any
 
-**Gotchas:** Be careful when copying over assembly from IDA. Immediate values are expected to be in decimal or hex with 0x-prefix (0x12), while IDA gives them with h-suffix (12h) which is not supported. Also IDA mingles local variable and other information into the instruction which leads to matching failure.
+**Gotchas:** Be careful when copying over assembly from IDA.
+IDA mingles local variable names and other information into the instruction which leads to matching failure.
+Also, labels are not supported ("call sub_123456").
 
 
 Note that Code Patterns is the most expensive Rule, and if only Code Rules are present FF has no option but to disassemble the entire database. This can take up to several minutes for very large binaries. See notes on performance below.
@@ -108,7 +113,7 @@ Note: IDA performs extensive matching of any size and any position of the immedi
 ### Byte Pattern
 
 The function must contain the given byte pattern at least once.
-The pattern is of the same format as IDA's binary search, and thus supports wildcards - the perfect match for the advanced-copy feature!
+The pattern is of the same format as IDAs binary search, and thus supports wildcards - the perfect match for the advanced-copy feature!
 
 Examples:
 
@@ -121,7 +126,7 @@ Note: Pattern matching is quiet fast and a good candidate to cut down matches qu
 
 The function must reference the given string at least once.
 The string is matched according to pythons 'fnmatch' module, and thus supports wildcard-like matching.
-Matching is performed case insensitive.
+Matching is performed case-insensitive.
 Strings of the following formats are considered: [idaapi.STRTYPE_C, idaapi.STRTYPE_C_16] (this can be changed in the Config class).
 
 Examples:
@@ -136,7 +141,7 @@ Note: String matching is fast and a good choice to cut down candidates quickly!
 
 The function must reference the given name/label at least once.
 The name/label is matched according to pythons 'fnmatch' module, and thus supports wildcard-like matching.
-Matching is performed case insensitive.
+Matching is performed case-insensitive.
 
 Examples:
 
@@ -175,10 +180,12 @@ For ease of use FF can be used via the following keyboard shortcuts:
 Further GUI usage
 
 * Rules can be edited by double-clicking the Data column
-* Rules can be inverted (negative match) by double clicking the invert-match column
-* Rules can be enabled/disabled by double clicking the enabled-column
+* Rules can be inverted (negative match) by double-clicking the invert-match column
+* Rules can be enabled/disabled by double-clicking the enabled-column
 * Sorting is supported both for Rule-List and Result-List
 * Double-click Result item to jump to it in IDA
+  * function name: jump to function start
+  * any other column: jump to match of last matched rule
 * Checkbox Profile: Outputs profiling information for the search
 * Checkbox Debug: Dumps detailed debugging output for code rule matching - only use it if few functions make it to the code checking rule, otherwise it might take very long!
 
@@ -193,7 +200,7 @@ or even only the actual opcodes of the instruction. FindFunc makes this easy by 
 
 ### Copy all bytes
 
-Copies all instruction bytes as hex-string to clipboard, for use in a Byte-Pattern-Rule (or IDA's binary search).
+Copies all instruction bytes as hex-string to clipboard, for use in a Byte-Pattern-Rule (or IDAs binary search).
 
     B8 44332211      mov eax,11223344
     68 00000001      push 1000000
@@ -230,13 +237,15 @@ will be copied as
 
     b8 ?? ?? ?? ?? 68 ?? ?? ?? ?? 66 89 ?? ?? ??
 
-Note: This is a "best effort" using IDA's API, thus there may be few cases where it only works partially.
+Note: This is a "best effort" using IDAs API, thus there may be few cases where it only works partially.
 For a 100% correct solution we would have to ship a dedicated x86 disasm library.
 
-
-
 Similar results can be achieved with Code Pattern Rules, but this might be faster,
-both for user interaction as well as the actual search.
+both for user interaction and the actual search.
+
+### Copy disasm
+
+Copies selected disassembly to clipboard, as it appears in IDA.
 
 
 ## Performance
@@ -261,8 +270,6 @@ A brief word on performance:
 
 * fix IDA docking
 * jcc pseudo-mnemonic
-* support or warn if asm is entered in IDA format (eg "12h" instead of 0x12)
-* Code Rule with only mnemonic constraint (and any operands)
 * Allow named locations in CodeRules ('call memset')
 * 'ignore all following operands' option
 * Rule for parameters to API calls inside function
@@ -270,7 +277,6 @@ A brief word on performance:
 * Rule for function parameters
 * Regex-rule
 * string/name: casing option
-* allow direct pasting of byte pattern
 * automatically convert immediate rules to byte pattern if applicable?
 * settings: case sensitivity, string types, range, ...
 * Hexray rules?
