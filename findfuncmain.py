@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QMessageBox
 
 from findfunc import findfunc_gui
 
@@ -29,15 +29,18 @@ VERSION = '1.0'
 WINDOWTITLE = f'{PLUGIN_NAME} {VERSION}'
 INFOSTR = f'For usage see: ' '<a href="https://github.com/FelixBer/FindFunc">https://github.com/FelixBer/FindFunc</a>'
 
-
+# this is executed when running a script rather than plugin
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    tabwid = findfunc_gui.TabWid()
-    tabwid.setInfoString(INFOSTR)
-    tabwid.setWindowTitle(WINDOWTITLE)
-    tabwid.show()
-    if not inida:
-        sys.exit(app.exec_())
+    if inida and not idaapi.get_input_file_path():
+        QMessageBox.information(None, "No File", "Please load a file in IDA first, then run script again.")
+    else:
+        app = QApplication(sys.argv) if not inida else None  # if we run outside IDA for testing
+        tabwid = findfunc_gui.TabWid()
+        tabwid.setInfoString(INFOSTR)
+        tabwid.setWindowTitle(WINDOWTITLE)
+        tabwid.show()
+        if app:
+            sys.exit(app.exec_())
 
 
 # plugin stuff
