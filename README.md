@@ -1,7 +1,7 @@
-# FindFunc: Advanced Filtering/Finding of Functions in IDA PRO
+# FindFunc: Advanced Filtering/Finding of Functions in IDA Pro
 
 
-FindFunc is an IDA PRO plugin to find code functions that contain a certain assembly or byte pattern, reference a certain name or string, or conform to various other constraints. This is not a competitor to tools like Diaphora or BinNavi, but it is ideal to find a known function in a new binary for cases where classical bindiffing fails.
+FindFunc is an IDA Pro plugin to find code functions that contain a certain assembly or byte pattern, reference a certain name or string, or conform to various other constraints. This is not a competitor to tools like Diaphora or BinNavi, but it is ideal to find a known function in a new binary for cases where classical bindiffing fails.
 
 
 ![ffmain](./img/ffmain.png)
@@ -10,7 +10,7 @@ FindFunc is an IDA PRO plugin to find code functions that contain a certain asse
 ## Filtering with Rules
 
 
-The main functionality of FindFunc is letting the user specify a set of "Rules" or constraints that a code function in IDA PRO has to satisfy. FF will then find and list all functions that satisfy ALL rules (so currently all Rules are in an AND-conjunction). Exception: Rules can be "inverted" to be negative matches. Such rules thus conform to "AND NOT".
+The main functionality of FindFunc is letting the user specify a set of "Rules" or constraints that a code function in IDA Pro has to satisfy. FF will then find and list all functions that satisfy ALL rules (so currently all Rules are in an AND-conjunction). Exception: Rules can be "inverted" to be negative matches. Such rules thus conform to "AND NOT".
 
 FF will schedule the rules in a smart order to minimize processing time.
 Feature overview:
@@ -43,11 +43,11 @@ This feature nicely complements the Byte Pattern rule!
 
 ## Building and Installation
 
-FindFunc is an IDA PRO python plugin without external package dependencies.
-It can be installed by downloading the repository and copying file findfuncmain.py and folder findfunc to your IDA PRO plugin directory. No building is required.
+FindFunc is an IDA Pro python plugin without external package dependencies.
+It can be installed by downloading the repository and copying file findfuncmain.py and folder findfunc to your IDA Pro plugin directory. No building is required.
 
 
-Requirements: IDA PRO 7.x (7.6+) with python3 environment.
+Requirements: IDA Pro 7.x (7.6+) with python3 environment.
 FindFunc is designed for x86/x64 architecture only.
 It has been tested with IDA 7.6/7.7, python 3.9 and IDAPython 7.4.0 on Windows 10.
 
@@ -153,7 +153,7 @@ Note: Name matching is very fast and ideal to cut down candidates quickly!
 
 ### Function Size
 
-The size of the function must be within the given limit: "min <= functionsize < max"
+The size of the function must be within the given limit: "min <= functionsize <= max".
 Data is entered as a string of the form "min,max".
 The size of a function includes all of its chunks.
 
@@ -269,6 +269,7 @@ A brief word on performance:
 ### Todo (unordered):
 
 * fix IDA docking
+* renaming of Tabs
 * jcc pseudo-mnemonic
 * Allow named locations in CodeRules ('call memset')
 * 'ignore all following operands' option
