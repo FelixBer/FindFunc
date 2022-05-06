@@ -347,13 +347,13 @@ class FindFuncTab(QWidget):
         profiler = cProfile.Profile()
         if self.matcher.info.profile:
             profiler.enable()
-        starttime = time.time()
+        starttime = time.perf_counter()
         idaapi.show_wait_box("FindFunc: Finding Functions... ")  # todo: maybe use ida_kernwin.replace_wait_box
         results = self.matcher.do_match(self.model.mydata, limitto)
         idaapi.hide_wait_box()
         self.resultmodel.set_items([ResultModel.Result(fn.va, fn.size, len(fn.chunks) - 1, fn.name, fn.lastmatch) for fn in results])
         self.ui.tableresults.resizeColumnsToContents()
-        timetaken = time.time() - starttime
+        timetaken = time.perf_counter() - starttime
         print("Results found: ", len(results))
         print('Execution time in seconds: ' + str(round(timetaken, 2)))
         if self.matcher.info.profile:
