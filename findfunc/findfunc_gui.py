@@ -390,7 +390,8 @@ class TabWid(QWidget):
         self.count = 0
         self.ui = Ui_fftabs()
         self.ui.setupUi(self)
-        self.ui.tabWidget.tabBar().tabBarClicked.connect(self.newTabClicked)
+        self.ui.tabWidget.tabBar().tabBarClicked.connect(self.tabClicked)
+        self.ui.tabWidget.tabBar().tabBarDoubleClicked.connect(self.tabDoubleClicked)
         self.ui.tabWidget.tabBar().tabCloseRequested.connect(self.closeTabReq)
         self.ui.tabWidget.tabBar().tabMoved.connect(self.tabmoved)
         self.clearAll()
@@ -402,16 +403,22 @@ class TabWid(QWidget):
     def setInfoString(self, info: str):
         self.ui.linklabel.setText(info)
 
-    def tabmoved(self):
-        self.resetNewTabButton()
-
-    def newTabClicked(self, index):
-        if index == -1 or self.ui.tabWidget.tabBar().count() <= 1:
-            self.addNewTab()
-
     def addNewTab(self):
         self.ui.tabWidget.addTab(FindFuncTab(), f"Tab {self.genId()}")
         self.resetNewTabButton()
+
+    def tabmoved(self):
+        self.resetNewTabButton()
+
+    def tabClicked(self, index):
+        if index == -1 or self.ui.tabWidget.tabBar().count() <= 1:
+            self.addNewTab()
+
+    def tabDoubleClicked(self, index):
+        title = self.ui.tabWidget.tabBar().tabText(index)
+        data, succ = QtWidgets.QInputDialog.getText(self, 'Rename Tab', 'New Tab Name:', QLineEdit.Normal, title)
+        if succ:
+            self.ui.tabWidget.tabBar().setTabText(index, data)
 
     def closeTabReq(self, index):
         self.ui.tabWidget.removeTab(index)

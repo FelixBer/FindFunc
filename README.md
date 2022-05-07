@@ -182,6 +182,7 @@ Further GUI usage
 * Rules can be edited by double-clicking the Data column
 * Rules can be inverted (negative match) by double-clicking the invert-match column
 * Rules can be enabled/disabled by double-clicking the enabled-column
+* Tabs can be renamed by double-clicking them
 * Sorting is supported both for Rule-List and Result-List
 * Double-click Result item to jump to it in IDA
   * function name: jump to function start
@@ -269,7 +270,6 @@ A brief word on performance:
 ### Todo (unordered):
 
 * fix IDA docking
-* renaming of Tabs
 * jcc pseudo-mnemonic
 * Allow named locations in CodeRules ('call memset')
 * 'ignore all following operands' option
