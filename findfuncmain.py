@@ -20,7 +20,6 @@ except:
 if inida:
     from findfunc.advanced_copy import copy_all_bytes, copy_bytes_no_imm, copy_only_opcodes, copy_only_disasm
 
-
 __AUTHOR__ = 'feber'
 
 PLUGIN_NAME = "FindFunc (x86/x64)"
@@ -53,7 +52,7 @@ class FindFunc(idaapi.plugin_t):
     """
     Main Plugin Class
     """
-    flags = idaapi.PLUGIN_PROC  # | idaapi.PLUGIN_FIX #| idaapi.PLUGIN_HIDE
+    flags = 0  # idaapi.PLUGIN_PROC  # | idaapi.PLUGIN_FIX #| idaapi.PLUGIN_HIDE
     comment = "Function Finder and Advanced copying of instruction bytes"
     help = f"Edit->Plugin->FindFunc or {PLUGIN_HOTKEY}. Also: disasm->rightclick->copy all|opcode|noimm"
     wanted_name = PLUGIN_NAME
@@ -63,6 +62,11 @@ class FindFunc(idaapi.plugin_t):
     ACTION_COPY_OPC = "feber:copy_opc"
     ACTION_COPY_NO_IMM = "feber:copy_no_imm"
     ACTION_COPY_DISASM = "feber:copy_disasm"
+
+    def __init__(self):
+        super().__init__()
+        self.hooks = ACUiHook()
+        self.maintabwidgtet = None
 
     def init(self):
         # see advanced_copy for details
@@ -107,7 +111,6 @@ class FindFunc(idaapi.plugin_t):
         self.maintabwidgtet.setInfoString(INFOSTR)
         self.maintabwidgtet.setWindowTitle(WINDOWTITLE)
 
-        self.hooks = ACUiHook()
         self.hooks.hook()
 
         idaapi.msg("%s %s by %s loaded\n" % (self.wanted_name, VERSION, __AUTHOR__))
@@ -117,7 +120,8 @@ class FindFunc(idaapi.plugin_t):
         """
         Edit->Plugins->... or hotkey
         """
-        self.maintabwidgtet.show()
+        if self.maintabwidgtet:
+            self.maintabwidgtet.show()
 
     def term(self):
         self.hooks.unhook()
