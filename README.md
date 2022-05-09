@@ -22,6 +22,7 @@ Feature overview:
 * Saving/Loading rules from/to file in simple ascii format
 * Several independent Tabs for experimentation
 * Copying rules between Tabs via clipboard (same format as file format)
+* Saving entire session (all tabs) to file
 * Advanced copying of instruction bytes (all, opcodes only, all except immediates)
 
 Button "Search Functions" clears existing results and starts a fresh search,
@@ -177,6 +178,8 @@ For ease of use FF can be used via the following keyboard shortcuts:
 * Ctrl+L -> load selected rules from file (appends)
 * Ctrl+A -> select all rules
 * Del -> delete selected rules
+* Ctrl+Shift+L -> Load session from file
+* Ctrl+Shift+S -> Save session to file
 
 Further GUI usage
 
@@ -282,10 +285,8 @@ A brief word on performance:
 * automatically convert immediate rules to byte pattern if applicable?
 * settings: case sensitivity, string types, range, ...
 * Hexray rules?
-* persist state across IDA restarts
 * OR combination of rules
 * Pythonification of code ;)
 * Parallelization
 * Automatic generation of rules to identify a function?
-
 

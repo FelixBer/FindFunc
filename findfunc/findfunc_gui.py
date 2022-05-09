@@ -1,3 +1,4 @@
+import datetime
 import pstats
 import time
 import pickle
@@ -391,18 +392,82 @@ class TabWid(QWidget):
     """
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.count = 0
+        self.count = 0  # Tab Numbering
         self.ui = Ui_fftabs()
         self.ui.setupUi(self)
         self.ui.tabWidget.tabBar().tabBarClicked.connect(self.tabClicked)
         self.ui.tabWidget.tabBar().tabBarDoubleClicked.connect(self.tabDoubleClicked)
         self.ui.tabWidget.tabBar().tabCloseRequested.connect(self.closeTabReq)
         self.ui.tabWidget.tabBar().tabMoved.connect(self.tabmoved)
+        self.ui.btnloadsess.clicked.connect(self.loadsessionclicked)
+        self.ui.btnloadsess.setToolTip("load tabs from file and append to existing")
+        self.ui.btnloadsess.setShortcut("ctrl+shift+l")
+        self.ui.btnsavesess.clicked.connect(self.savesessionclicked)
+        self.ui.btnsavesess.setToolTip("save all tabs to file")
+        self.ui.btnsavesess.setShortcut("ctrl+shift+s")
         self.clearAll()
         self.addNewTab()
         for r in [RuleImmediate(9), RuleCode("xor eax,r32"), RuleNameRef("mem*")]:
             self.ui.tabWidget.widget(0).model.add_item(r)
+        self.lastsessionsaved = self.session_to_text()  # last saved session data, used for checking on close
         print("init with config:" + str(self.ui.tabWidget.widget(0).matcher.info))
+
+    def loadsessionclicked(self):
+        path, x = QFileDialog.getOpenFileName(self, 'Open Session File', "", "Session (*.ffsess) ;; Any (*.*)")
+        if not path:
+            return
+        try:
+            with open(path, 'r') as handle:
+                session = handle.read()
+                self.load_session_from_text(session)
+                self.lastsessionsaved = session
+        except Exception as ex:
+            QMessageBox.error(self, "Error loading session", str(ex))
+
+    def savesessionclicked(self):
+        path, x = QFileDialog.getSaveFileName(self, 'Save Session to File',
+                                              f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.ffsess",
+                                              "Session (*.ffsess) ;; Any (*.*)")
+        if not path:
+            return
+        try:
+            with open(path, 'w') as handle:
+                session = self.session_to_text()
+                handle.write(session)
+                self.lastsessionsaved = session
+        except Exception as ex:
+            QMessageBox.error(self, "Error saving session", str(ex))
+
+    def session_to_text(self) -> str:
+        """
+        serialize all current tabs (including their names) to string
+        """
+        r = ""
+        for i in range(self.ui.tabWidget.tabBar().count()):
+            if not self.ui.tabWidget.tabBar().isTabEnabled(i):
+                continue
+            title = self.ui.tabWidget.tabBar().tabText(i)
+            r += "Tab " + title + "\n"
+            wid = self.ui.tabWidget.widget(i)
+            r += to_clipboard_string(wid.model.mydata)
+        return r
+
+    def load_session_from_text(self, session: str):
+        """
+        restore tabs (including names) from string
+        loaded tabs are appended to existing ones
+        """
+        tab = None
+        for line in session.split('\n'):
+            if line.startswith("Tab "):
+                tab = self.ui.tabWidget.addTab(FindFuncTab(), line[len("Tab "):])
+                continue
+            rule = from_clipboard_string(line)
+            if tab:
+                wid = self.ui.tabWidget.widget(tab)
+                wid.model.mydata += rule
+                wid.model.layoutChanged.emit()
+        self.resetNewTabButton()
 
     def setInfoString(self, info: str):
         self.ui.linklabel.setText(info)

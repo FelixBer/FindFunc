@@ -124,6 +124,11 @@ class FindFunc(idaapi.plugin_t):
             self.maintabwidgtet.show()
 
     def term(self):
+        if self.maintabwidgtet and self.maintabwidgtet.lastsessionsaved != self.maintabwidgtet.session_to_text():
+            reply = QMessageBox.question(None, "Save Session", "Your FindFunc session has not been saved. Save now?",
+                                         QMessageBox.Yes | QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                self.maintabwidgtet.savesessionclicked()
         self.hooks.unhook()
         idaapi.unregister_action(self.ACTION_COPY_BYTES)
         idaapi.unregister_action(self.ACTION_COPY_OPC)
