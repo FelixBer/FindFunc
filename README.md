@@ -170,6 +170,7 @@ For ease of use FF can be used via the following keyboard shortcuts:
 
 * Ctrl+Alt+F -> launch/show TabWidget (main GUI)
 * Ctrl+F -> start search with currently enabled rules
+* Ctrl+R -> refine existing results with currently enabled rules
 * Ctrl+C -> copy selected rules to clipboard
 * Ctrl+V -> paste rules from clipboard into current tab (appends)
 * Ctrl+S -> save selected rules to file

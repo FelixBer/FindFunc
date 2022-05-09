@@ -95,10 +95,14 @@ class FindFuncTab(QWidget):
         self.ui.tableresults.addAction(act)
         self.resmenu.addAction("clear", self.clearresults)
         # menu end
-        # add shortcut for search
+        # add shortcut for search and refine
         act = QtWidgets.QAction("find", self)
         act.setShortcut("ctrl+f")
         act.triggered.connect(self.dosearchclicked)
+        self.ui.tableview.addAction(act)
+        act = QtWidgets.QAction("refine", self)
+        act.setShortcut("ctrl+r")
+        act.triggered.connect(self.dorefineclicked)
         self.ui.tableview.addAction(act)
         # event filters, see self.eventFilter()
         self.ui.tableview.installEventFilter(self)
