@@ -425,18 +425,24 @@ class TabWid(QWidget):
             QMessageBox.error(self, "Error loading session", str(ex))
 
     def savesessionclicked(self):
-        path, x = QFileDialog.getSaveFileName(self, 'Save Session to File',
+        session = self.session_to_text()
+        if self.save_as_session(session):
+            self.lastsessionsaved = session
+
+    @staticmethod
+    def save_as_session(session) -> bool:
+        path, x = QFileDialog.getSaveFileName(None, 'Save Session to File',
                                               f"{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.ffsess",
                                               "Session (*.ffsess) ;; Any (*.*)")
         if not path:
-            return
+            return False
         try:
             with open(path, 'w') as handle:
-                session = self.session_to_text()
                 handle.write(session)
-                self.lastsessionsaved = session
+            return True
         except Exception as ex:
-            QMessageBox.error(self, "Error saving session", str(ex))
+            QMessageBox.error(None, "Error saving session", str(ex))
+            return False
 
     def session_to_text(self) -> str:
         """

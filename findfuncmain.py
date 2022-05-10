@@ -1,6 +1,6 @@
 import sys
 
-from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtWidgets import QApplication, QMessageBox, QVBoxLayout
 
 from findfunc import findfunc_gui
 
@@ -13,6 +13,7 @@ try:
     import ida_bytes
     import ida_ua
     import ida_pro
+    from idaapi import PluginForm
 except:
     inida = False
     print("not in ida")
@@ -107,9 +108,6 @@ class FindFunc(idaapi.plugin_t):
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
 
-        self.maintabwidgtet = findfunc_gui.TabWid()
-        self.maintabwidgtet.setInfoString(INFOSTR)
-        self.maintabwidgtet.setWindowTitle(WINDOWTITLE)
 
         self.hooks.hook()
 
@@ -120,22 +118,69 @@ class FindFunc(idaapi.plugin_t):
         """
         Edit->Plugins->... or hotkey
         """
-        if self.maintabwidgtet:
-            self.maintabwidgtet.show()
+        open_form()
 
     def term(self):
-        if self.maintabwidgtet and self.maintabwidgtet.lastsessionsaved != self.maintabwidgtet.session_to_text():
-            reply = QMessageBox.question(None, "Save Session", "Your FindFunc session has not been saved. Save now?",
-                                         QMessageBox.Yes | QMessageBox.No)
-            if reply == QMessageBox.Yes:
-                self.maintabwidgtet.savesessionclicked()
         self.hooks.unhook()
         idaapi.unregister_action(self.ACTION_COPY_BYTES)
         idaapi.unregister_action(self.ACTION_COPY_OPC)
         idaapi.unregister_action(self.ACTION_COPY_NO_IMM)
+        global cursession
+        global lastsavedsession
+        if cursession != lastsavedsession:
+            reply = QMessageBox.question(None, "Save Session", "Your FindFunc session has not been saved. Save now?",
+                                             QMessageBox.Yes | QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                findfunc_gui.TabWid.save_as_session(cursession)
+                lastsavedsession = cursession
 
 
 # plugin helper stuff
+
+cursession = ""
+lastsavedsession = ""
+
+
+def open_form():
+    global ffform
+    try:
+        ffform
+    except Exception:
+        print("ff constructed")
+        ffform = FunctionsListForm_t()
+    ffform.Show()
+
+
+class FunctionsListForm_t(PluginForm):
+    """
+    wrapper required for docking
+    """
+    def OnCreate(self, form):
+        print("create")
+        self.parent = self.FormToPyQtWidget(form)
+        self.mtw = findfunc_gui.TabWid()
+        self.mtw.setInfoString(INFOSTR)
+        self.mtw.setWindowTitle(WINDOWTITLE)
+        global cursession
+        if cursession:
+            self.mtw.clearAll()
+            self.mtw.load_session_from_text(cursession)
+            cursession = ""
+        layout = QVBoxLayout()
+        layout.addWidget(self.mtw)
+        layout.setSpacing(0)
+        layout.setContentsMargins(0, 0, 0, 0)
+        self.parent.setLayout(layout)
+
+    def OnClose(self, form):
+        print("closed")
+        global cursession
+        global lastsavedsession
+        cursession = self.mtw.session_to_text()
+        lastsavedsession = self.mtw.lastsessionsaved
+
+    def Show(self):
+        return PluginForm.Show(self, WINDOWTITLE, options=PluginForm.WOPN_PERSIST)
 
 
 class ACActionHandler(idaapi.action_handler_t):

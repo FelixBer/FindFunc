@@ -273,7 +273,6 @@ A brief word on performance:
 
 ### Todo (unordered):
 
-* fix IDA docking
 * jcc pseudo-mnemonic
 * Allow named locations in CodeRules ('call memset')
 * 'ignore all following operands' option
