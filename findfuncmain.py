@@ -63,6 +63,7 @@ class FindFunc(idaapi.plugin_t):
     ACTION_COPY_OPC = "feber:copy_opc"
     ACTION_COPY_NO_IMM = "feber:copy_no_imm"
     ACTION_COPY_DISASM = "feber:copy_disasm"
+    ACTION_FFOPEN = "feber:ffopen"
 
     def __init__(self):
         super().__init__()
@@ -107,7 +108,20 @@ class FindFunc(idaapi.plugin_t):
             31
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
+        action_desc = idaapi.action_desc_t(
+            self.ACTION_FFOPEN,
+            "FindFunc",
+            ACActionHandler(open_form),
+            "ctrl+alt+f",  # hotkey
+            "",
+            -1
+        )
+        assert idaapi.register_action(action_desc), "Action registration failed"
 
+        idaapi.attach_action_to_menu(
+            'View/',
+            self.ACTION_FFOPEN,
+            idaapi.SETMENU_APP)
 
         self.hooks.hook()
 
@@ -125,6 +139,7 @@ class FindFunc(idaapi.plugin_t):
         idaapi.unregister_action(self.ACTION_COPY_BYTES)
         idaapi.unregister_action(self.ACTION_COPY_OPC)
         idaapi.unregister_action(self.ACTION_COPY_NO_IMM)
+        idaapi.unregister_action(self.ACTION_FFOPEN)
         global cursession
         global lastsavedsession
         if cursession != lastsavedsession:

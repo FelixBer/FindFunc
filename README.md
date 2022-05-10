@@ -170,16 +170,19 @@ Note: Function size matching is very fast and ideal to cut down candidates quick
 For ease of use FF can be used via the following keyboard shortcuts:
 
 * Ctrl+Alt+F -> launch/show TabWidget (main GUI)
+  * Or View->FindFunc
 * Ctrl+F -> start search with currently enabled rules
 * Ctrl+R -> refine existing results with currently enabled rules
-* Ctrl+C -> copy selected rules to clipboard
-* Ctrl+V -> paste rules from clipboard into current tab (appends)
-* Ctrl+S -> save selected rules to file
-* Ctrl+L -> load selected rules from file (appends)
-* Ctrl+A -> select all rules
-* Del -> delete selected rules
-* Ctrl+Shift+L -> Load session from file
-* Ctrl+Shift+S -> Save session to file
+* Rules
+  * Ctrl+C -> copy selected rules to clipboard
+  * Ctrl+V -> paste rules from clipboard into current tab (appends)
+  * Ctrl+S -> save selected rules to file
+  * Ctrl+L -> load selected rules from file (appends)
+  * Ctrl+A -> select all rules
+  * Del -> delete selected rules
+* Save Session
+    * Ctrl+Shift+S -> Save session to file
+    * Ctrl+Shift+L -> Load session from file
 
 Further GUI usage
 
