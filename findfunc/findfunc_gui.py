@@ -390,8 +390,9 @@ class TabWid(QWidget):
     Widget that represents the Tabwidget.
     At the end of the tab bar there is a disabled tab that creates a new tab when clicked.
     """
-    def __init__(self, parent=None):
+    def __init__(self, asplugin=False, parent=None):
         super().__init__(parent)
+        self.running_as_plugin = asplugin
         self.count = 0  # Tab Numbering
         self.ui = Ui_fftabs()
         self.ui.setupUi(self)
@@ -411,6 +412,18 @@ class TabWid(QWidget):
             self.ui.tabWidget.widget(0).model.add_item(r)
         self.lastsessionsaved = self.session_to_text()  # last saved session data, used for checking on close
         print("init with config:" + str(self.ui.tabWidget.widget(0).matcher.info))
+
+    def closeEvent(self, event):
+        # when running as script, we need to handle it here
+        # when running as plugin, this is handled in findfuncmain.py
+        if not self.running_as_plugin:
+            cursession = self.session_to_text()
+            if cursession and cursession != self.lastsessionsaved:
+                reply = QMessageBox.question(None, "Save Session",
+                                             "Your FindFunc session has not been saved. Save now?",
+                                             QMessageBox.Yes | QMessageBox.No)
+                if reply == QMessageBox.Yes:
+                    self.savesessionclicked()
 
     def loadsessionclicked(self):
         path, x = QFileDialog.getOpenFileName(self, 'Open Session File', "", "Session (*.ffsess) ;; Any (*.*)")

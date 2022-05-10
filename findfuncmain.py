@@ -35,7 +35,7 @@ if __name__ == "__main__":
         QMessageBox.information(None, "No File", "Please load a file in IDA first, then run script again.")
     else:
         app = QApplication(sys.argv) if not inida else None  # if we run outside IDA for testing
-        tabwid = findfunc_gui.TabWid()
+        tabwid = findfunc_gui.TabWid(False)
         tabwid.setInfoString(INFOSTR)
         tabwid.setWindowTitle(WINDOWTITLE)
         tabwid.show()
@@ -171,7 +171,7 @@ class FunctionsListForm_t(PluginForm):
     """
     def OnCreate(self, form):
         self.parent = self.FormToPyQtWidget(form)
-        self.mtw = findfunc_gui.TabWid()
+        self.mtw = findfunc_gui.TabWid(True)
         self.mtw.setInfoString(INFOSTR)
         self.mtw.setWindowTitle(WINDOWTITLE)
         global cursession
