@@ -142,7 +142,7 @@ class FindFunc(idaapi.plugin_t):
         idaapi.unregister_action(self.ACTION_FFOPEN)
         global cursession
         global lastsavedsession
-        if cursession != lastsavedsession:
+        if cursession and cursession != lastsavedsession:
             reply = QMessageBox.question(None, "Save Session", "Your FindFunc session has not been saved. Save now?",
                                              QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.Yes:
@@ -161,7 +161,6 @@ def open_form():
     try:
         ffform
     except Exception:
-        print("ff constructed")
         ffform = FunctionsListForm_t()
     ffform.Show()
 
@@ -171,7 +170,6 @@ class FunctionsListForm_t(PluginForm):
     wrapper required for docking
     """
     def OnCreate(self, form):
-        print("create")
         self.parent = self.FormToPyQtWidget(form)
         self.mtw = findfunc_gui.TabWid()
         self.mtw.setInfoString(INFOSTR)
@@ -188,7 +186,6 @@ class FunctionsListForm_t(PluginForm):
         self.parent.setLayout(layout)
 
     def OnClose(self, form):
-        print("closed")
         global cursession
         global lastsavedsession
         cursession = self.mtw.session_to_text()
