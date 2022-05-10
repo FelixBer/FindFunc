@@ -337,7 +337,7 @@ class FindFuncTab(QWidget):
                     handle.write(to_clipboard_string(tosave))
             QMessageBox.information(self, "Success", "Saved successfully to " + path)
         except Exception as ex:
-            QMessageBox.error(self, "Error saving file", str(ex))
+            QMessageBox.warning(self, "Error saving file", str(ex))
 
     def _dosearch(self, limitto: List[int]):
         """
@@ -422,7 +422,7 @@ class TabWid(QWidget):
                 self.load_session_from_text(session)
                 self.lastsessionsaved = session
         except Exception as ex:
-            QMessageBox.error(self, "Error loading session", str(ex))
+            QMessageBox.warning(self, "Error loading session", str(ex))
 
     def savesessionclicked(self):
         session = self.session_to_text()
@@ -441,7 +441,7 @@ class TabWid(QWidget):
                 handle.write(session)
             return True
         except Exception as ex:
-            QMessageBox.error(None, "Error saving session", str(ex))
+            QMessageBox.warning(None, "Error saving session", str(ex))
             return False
 
     def session_to_text(self) -> str:
