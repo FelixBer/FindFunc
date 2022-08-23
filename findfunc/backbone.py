@@ -427,6 +427,9 @@ def from_clipboard_string(data: str) -> List[Rule]:
     :param data: list of rules as string
     :return: string as list of rules
     """
+    # allow pasting immediate directly
+    if InstrWildcard.parse_int(data):
+        return [RuleImmediate(data)]
     # allow pasting hexstring directly
     if RuleBytePattern.is_raw_pattern(data):
         return [RuleBytePattern(data)]

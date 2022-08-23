@@ -109,6 +109,7 @@ Examples for instructions matching immediate value 0x100:
     push 0x100
 
 
+Immediates can be pasted directly from clipboard into the list of rules.
 Note: IDA performs extensive matching of any size and any position of the immediate. If you know it to be of a specific width of 4 or 8 bytes, a byte pattern can be faster (but may produce false positives).
 
 ### Byte Pattern
@@ -121,6 +122,8 @@ Examples:
     11 22 33 44 aa bb cc
     11 22 33 ?? ?? bb cc -> ?? can be any byte
 
+
+Byte-patterns can be pasted directly from clipboard into the list of rules.
 Note: Pattern matching is quiet fast and a good candidate to cut down matches quickly!
 
 ### String Reference
@@ -189,6 +192,7 @@ Further GUI usage
 * Rules can be edited by double-clicking the Data column
 * Rules can be inverted (negative match) by double-clicking the invert-match column
 * Rules can be enabled/disabled by double-clicking the enabled-column
+* Byte-Patterns and immediates can be pasted directly from clipboard into the Rules table
 * Tabs can be renamed by double-clicking them
 * Sorting is supported both for Rule-List and Result-List
 * Double-click Result item to jump to it in IDA
