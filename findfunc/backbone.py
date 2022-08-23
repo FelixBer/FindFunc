@@ -172,7 +172,7 @@ class Rule(object):
     def get_data(self):
         pass
 
-    def set_data(self, data):
+    def set_data(self, data) -> bool:
         pass
 
     def is_editable(self) -> bool:
@@ -199,7 +199,7 @@ class RuleFuncSize(Rule):
     def get_data(self):
         return f"{self.min} <= x <= {self.max}"
 
-    def set_data(self, data: str):
+    def set_data(self, data: str) -> bool:
         """
         Parse user data in form "x,y" where x is minimum function size and
         y maximum.
@@ -216,6 +216,8 @@ class RuleFuncSize(Rule):
             mmax = InstrWildcard.parse_int(data[1])
             self.min = mmin
             self.max = mmax
+            return True
+        return False
 
     def checksize(self, size: int) -> bool:
         """
@@ -241,11 +243,11 @@ class RuleImmediate(Rule):
     def get_data(self):
         return hex(self.imm)
 
-    def set_data(self, data):
-        if isinstance(data, int):
-            self.imm = data
-        else:
-            self.imm = InstrWildcard.parse_int(data)
+    def set_data(self, data) -> bool:
+        imm = InstrWildcard.parse_int(data)
+        if imm is not None:
+            self.imm = imm
+        return imm is not None
 
 
 class RuleStrRef(Rule):
@@ -271,8 +273,11 @@ class RuleStrRef(Rule):
     def get_data(self):
         return self.str
 
-    def set_data(self, data):
-        self.str = str(data)
+    def set_data(self, data) -> bool:
+        isok = bool(str(data))
+        if isok:
+            self.str = str(data)
+        return isok
 
 
 class RuleNameRef(Rule):
@@ -298,8 +303,12 @@ class RuleNameRef(Rule):
     def get_data(self):
         return self.name
 
-    def set_data(self, data):
-        self.name = str(data)
+    def set_data(self, data) -> bool:
+        isok = bool(str(data))
+        if isok:
+            self.name = str(data)
+        return isok
+
 
 
 class RuleBytePattern(Rule):
@@ -334,8 +343,11 @@ class RuleBytePattern(Rule):
     def get_data(self):
         return self.pattern
 
-    def set_data(self, data):
-        self.pattern = str(data)
+    def set_data(self, data) -> bool:
+        if RuleBytePattern.is_raw_pattern(data):
+            self.pattern = str(data)
+            return True
+        return False
 
 
 class RuleCode(Rule):
@@ -371,16 +383,19 @@ class RuleCode(Rule):
     def get_data(self):
         return str(self.instr_string)
 
-    def set_data(self, data):
+    def set_data(self, data) -> bool:
         if not data:
-            return
+            return False
         if type(data) != list:
             data = [data]
         data = [x.strip() for x in data if x.strip()]
         instr = [InstrWildcard.parse_from_str(x) for x in data]
-        self.instr = instr
-        self.instr_string = data
-        self.clearcurrent()
+        isok = False not in (bool(x.mmn) for x in instr)
+        if isok:
+            self.instr = instr
+            self.instr_string = data
+            self.clearcurrent()
+        return isok
 
     def is_editable(self) -> bool:
         return False

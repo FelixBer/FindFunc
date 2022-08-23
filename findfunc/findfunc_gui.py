@@ -239,10 +239,11 @@ class FindFuncTab(QWidget):
         helper
         """
         try:
-            rule.set_data(data)
+            if not rule.set_data(data):
+                raise ValueError("Invalid input")
             self.model.add_item(rule)
         except Exception as ex:
-            QMessageBox.warning(None, "Error setting value", str(ex))
+            QMessageBox.warning(self, "Error setting value", str(ex))
             return False
         return True
 
@@ -295,9 +296,10 @@ class FindFuncTab(QWidget):
                                                         'Function must contain Code Pattern (See help for details):',
                                                          disp)
                 if succ:
-                    mydata[row].set_data(data.split('\n'))
+                    if not mydata[row].set_data(data.split('\n')):
+                        raise ValueError("Invalid input")
         except Exception as ex:
-            QMessageBox.warning(None, "Error setting value", str(ex))
+            QMessageBox.warning(self, "Error setting value", str(ex))
             return self.tableRulesDoubleClick(index)
         return None
 
@@ -394,7 +396,7 @@ class FindFuncTab(QWidget):
             print(stream.getvalue())
         if self.matcher.wascancelled:
             self.matcher.wascancelled = False
-            QMessageBox.warning(None, "Canceled", "Search was canceled.")
+            QMessageBox.warning(self, "Canceled", "Search was canceled.")
 
     def dosearchclicked(self):
         """
@@ -444,7 +446,7 @@ class TabWid(QWidget):
         if not self.running_as_plugin:
             cursession = self.session_to_text()
             if cursession and cursession != self.lastsessionsaved:
-                reply = QMessageBox.question(None, "Save Session",
+                reply = QMessageBox.question(self, "Save Session",
                                              "Your FindFunc session has not been saved. Save now?",
                                              QMessageBox.Yes | QMessageBox.No)
                 if reply == QMessageBox.Yes:

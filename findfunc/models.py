@@ -171,7 +171,10 @@ class RuleModel(QtCore.QAbstractTableModel):
                 return True
             if col == self.col_data:
                 try:
-                    self.mydata[index.row()].set_data(value)
+                    if not value:
+                        raise ValueError("Cannot be empty")
+                    if not self.mydata[index.row()].set_data(value):
+                        raise ValueError("Invalid input")
                     self.dataChanged.emit(index, index)
                     return True
                 except Exception as ex:
