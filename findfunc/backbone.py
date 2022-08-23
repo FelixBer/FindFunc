@@ -142,7 +142,7 @@ class InstrWildcard(object):
                 op.displ = InstrWildcard.parse_int(opdata[3])  # always displ
             if isneg:
                 op.displ = op.displ * -1
-                # we may need to extend some value here if we are not neg... todo alighn with ida.decode
+                # we may need to extend some value here if we are not neg... todo align with ida.decode
             result.ops.append(op)
         return result
 

@@ -23,7 +23,7 @@ Feature overview:
 * Several independent Tabs for experimentation
 * Copying rules between Tabs via clipboard (same format as file format)
 * Saving entire session (all tabs) to file
-* Advanced copying of instruction bytes (all, opcodes only, all except immediates)
+* Advanced copying of instruction bytes (all, opcodes only, all except immediates, ...)
 
 Button "Search Functions" clears existing results and starts a fresh search,
 "Refine Results" considers only results of the previous search.
@@ -45,7 +45,7 @@ This feature nicely complements the Byte Pattern rule!
 ## Building and Installation
 
 FindFunc is an IDA Pro python plugin without external package dependencies.
-It can be installed by downloading the repository and copying file findfuncmain.py and folder findfunc to your IDA Pro plugin directory. No building is required.
+It can be installed by downloading the repository and copying file 'findfuncmain.py' and folder 'findfunc' to your IDA Pro plugin directory. No building is required.
 
 
 Requirements: IDA Pro 7.x (7.6+) with python3 environment.
@@ -109,7 +109,7 @@ Examples for instructions matching immediate value 0x100:
     push 0x100
 
 
-Note: IDA performs extensive matching of any size and any position of the immediate. If you know it to be of a specific width of 4 or 8 bytes, a byte pattern can be a little faster.
+Note: IDA performs extensive matching of any size and any position of the immediate. If you know it to be of a specific width of 4 or 8 bytes, a byte pattern can be faster (but may produce false positives).
 
 ### Byte Pattern
 
@@ -146,8 +146,8 @@ Matching is performed case-insensitive.
 
 Examples:
 
-* "memset" -> function must reference a location named "memset" at least once
-* "mem*" -> function must reference a location starting with "mem" (memset, memcpy, memcmp) at least once
+* "memset" -> function must reference a name "memset" at least once
+* "mem*" -> function must reference a name starting with "mem" (memset, memcpy, memcmp) at least once
 
 
 Note: Name matching is very fast and ideal to cut down candidates quickly!
@@ -203,7 +203,7 @@ Further GUI usage
 ## Advanced Binary Copy
 
 Frequently we want to search for binary patterns of assembly, but without hardcoded  addresses and values (immediates),
-or even only the actual opcodes of the instruction. FindFunc makes this easy by adding three copy options to the disassembly-popupmenu:
+or even only the actual opcodes of the instruction. FindFunc makes this easy by adding three copy options to the disassembly popup-menu:
 
 
 ### Copy all bytes

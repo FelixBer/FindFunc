@@ -252,7 +252,7 @@ class FindFuncTab(QWidget):
 
     def tableRulesDoubleClick(self, index):
         """
-        Rule table double clicked: enabled/disabled, invert match or edit data
+        Rule table double-clicked: enabled/disabled, invert match or edit data
         """
         if not index.isValid():
             return None

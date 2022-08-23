@@ -84,7 +84,7 @@ def get_bytes_without_imm(ins) -> str:
         if op.type == idaapi.o_void:
             continue
         if op.type in (idc.o_phrase, idc.o_reg):
-            # have no immediatae (exception: some strange encodings where it is zero)
+            # have no immediate (exception: some strange encodings where it is zero)
             continue
         if op.type in (idc.o_near, idc.o_far):
             size = ida_ua.get_dtype_size(op.dtype)
