@@ -139,6 +139,7 @@ class FindFunc(idaapi.plugin_t):
         idaapi.unregister_action(self.ACTION_COPY_BYTES)
         idaapi.unregister_action(self.ACTION_COPY_OPC)
         idaapi.unregister_action(self.ACTION_COPY_NO_IMM)
+        idaapi.unregister_action(self.ACTION_COPY_DISASM)
         idaapi.unregister_action(self.ACTION_FFOPEN)
         global cursession
         global lastsavedsession
