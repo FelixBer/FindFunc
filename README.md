@@ -192,6 +192,7 @@ Further GUI usage
 * Rules can be edited by double-clicking the Data column
 * Rules can be inverted (negative match) by double-clicking the invert-match column
 * Rules can be enabled/disabled by double-clicking the enabled-column
+* Wheel-clicking any cell in Rules or Results copies the cell to clipboard
 * Byte-Patterns and immediates can be pasted directly from clipboard into the Rules table
 * Tabs can be renamed by double-clicking them
 * Sorting is supported both for Rule-List and Result-List

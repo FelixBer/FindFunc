@@ -54,6 +54,7 @@ class FindFuncTab(QWidget):
         # signals
         self.ui.tableview.doubleClicked.connect(self.tableRulesDoubleClick)
         self.ui.tableresults.doubleClicked.connect(self.resultDoubleClick)
+        self.ui.tableresults.pressed.connect(self.tableMidClickCopy)
         self.ui.btnaddimm.clicked.connect(self.addimmrule)
         self.ui.btnaddstr.clicked.connect(self.addstrrule)
         self.ui.btnaddname.clicked.connect(self.addnamerule)
@@ -249,6 +250,18 @@ class FindFuncTab(QWidget):
         if not va:
             va = mydata[row].va
         findfunc.matcher_ida.gui_jump_to_va(va)
+
+    def tableMidClickCopy(self, index):
+        """
+        table wheel-clicked: copy cell to clipboard
+        """
+        try:
+            if QApplication.mouseButtons() & Qt.MidButton:
+                data = index.model().data(index)
+                QApplication.instance().clipboard().setText(str(data))
+        except Exception:
+            pass
+        return None
 
     def tableRulesDoubleClick(self, index):
         """
