@@ -149,7 +149,7 @@ class RuleModel(QtCore.QAbstractTableModel):
             if col == self.col_data:
                 d = self.mydata[index.row()]
                 if isinstance(d, RuleImmediate):
-                    return int(d.get_data(), 16)
+                    return d.imm
             return None
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter

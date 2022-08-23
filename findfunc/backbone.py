@@ -409,7 +409,7 @@ def to_clipboard_string(data: List[Rule]) -> str:
         if isinstance(r, RuleFuncSize):
             ret += f"RuleFuncSize {r.enabled} {r.inverted} {r.min} {r.max}" + "\n"
         elif isinstance(r, RuleImmediate):
-            ret += f"RuleImmediate {r.enabled} {r.inverted} {r.imm}" + "\n"
+            ret += f"RuleImmediate {r.enabled} {r.inverted} {r.imm:#x}" + "\n"
         elif isinstance(r, RuleStrRef):
             ret += f"RuleStrRef {r.enabled} {r.inverted} {r.str}" + "\n"
         elif isinstance(r, RuleNameRef):
