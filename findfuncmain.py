@@ -74,7 +74,7 @@ class FindFunc(idaapi.plugin_t):
         # see advanced_copy for details
         action_desc = idaapi.action_desc_t(
             self.ACTION_COPY_BYTES,
-            "copy all bytes",
+            "copy bytes",
             ACActionHandler(copy_all_bytes),
             "ctrl+alt+b",  # hotkey
             "copy all selected bytes as hex",
@@ -83,19 +83,19 @@ class FindFunc(idaapi.plugin_t):
         assert idaapi.register_action(action_desc), "Action registration failed"
         action_desc = idaapi.action_desc_t(
             self.ACTION_COPY_OPC,
-            "copy opcodes only",
+            "copy opcodes",
             ACActionHandler(copy_only_opcodes),
             "ctrl+alt+o",  # hotkey
-            "copy selected opcodes as hex, wildcard out non-opcode bytes",
+            "copy selected opcodes as hex, mask out non-opcode bytes",
             31
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
         action_desc = idaapi.action_desc_t(
             self.ACTION_COPY_NO_IMM,
-            "copy bytes no immediates",
+            "copy without immediates",
             ACActionHandler(copy_bytes_no_imm),
             "ctrl+alt+i",  # hotkey
-            "copy instruction bytes, wildcard out all immediates",
+            "copy instruction bytes, mask out all immediates",
             31
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
