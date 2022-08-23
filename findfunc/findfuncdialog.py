@@ -110,5 +110,5 @@ class Ui_FindFunc(object):
         self.btnaddpattern.setText(_translate("FindFunc", "Byte Pattern"))
         self.chkdebug.setText(_translate("FindFunc", "Debug"))
         self.chkprofile.setText(_translate("FindFunc", "Profile"))
-        self.btnsearch.setText(_translate("FindFunc", "Search Functions"))
+        self.btnsearch.setText(_translate("FindFunc", "Find Functions"))
         self.btnrefine.setText(_translate("FindFunc", "Refine Results"))

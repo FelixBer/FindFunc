@@ -139,7 +139,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Search Functions</string>
+            <string>Find Functions</string>
            </property>
           </widget>
          </item>
