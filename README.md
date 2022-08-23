@@ -24,6 +24,7 @@ Feature overview:
 * Copying rules between Tabs via clipboard (same format as file format)
 * Saving entire session (all tabs) to file
 * Advanced copying of instruction bytes (all, opcodes only, all except immediates, ...)
+* Clone tabs for quick experiments with refining results
 
 Button "Search Functions" clears existing results and starts a fresh search,
 "Refine Results" considers only results of the previous search.
@@ -189,6 +190,7 @@ For ease of use FF can be used via the following keyboard shortcuts:
 
 Further GUI usage
 
+* Right-click on tab: option to clone tab
 * Rules can be edited by double-clicking the Data column
 * Rules can be inverted (negative match) by double-clicking the invert-match column
 * Rules can be enabled/disabled by double-clicking the enabled-column

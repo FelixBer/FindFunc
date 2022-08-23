@@ -205,6 +205,10 @@ class RuleModel(QtCore.QAbstractTableModel):
         self.mydata.append(item)
         self.layoutChanged.emit()
 
+    def set_items(self, items: List[Rule]):
+        self.mydata = items
+        self.layoutChanged.emit()
+
     def del_item(self, row: int):
         if row < len(self.mydata):
             self.mydata.remove(self.mydata[row])

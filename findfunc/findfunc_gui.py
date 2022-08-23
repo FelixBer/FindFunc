@@ -4,6 +4,7 @@ import time
 import pickle
 import cProfile
 import io
+import copy
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QWidget, QMessageBox, QLineEdit, QApplication, QTabBar, QMenu, QFileDialog
@@ -53,6 +54,7 @@ class FindFuncTab(QWidget):
         self.ui.tableresults.setAlternatingRowColors(True)
         # signals
         self.ui.tableview.doubleClicked.connect(self.tableRulesDoubleClick)
+        self.ui.tableview.pressed.connect(self.tableMidClickCopy)
         self.ui.tableresults.doubleClicked.connect(self.resultDoubleClick)
         self.ui.tableresults.pressed.connect(self.tableMidClickCopy)
         self.ui.btnaddimm.clicked.connect(self.addimmrule)
@@ -110,6 +112,16 @@ class FindFuncTab(QWidget):
         self.ui.tableview.installEventFilter(self)
         self.ui.tableresults.installEventFilter(self)
         self.show()
+
+    def clone(self):
+        """
+        Clones this widget, including deepcopying all rules and results.
+        """
+        wid = FindFuncTab()
+        wid.model.set_items(copy.deepcopy(self.model.mydata))
+        wid.resultmodel.set_items(copy.deepcopy(self.resultmodel.mydata))
+        wid.ui.tableresults.resizeColumnsToContents()
+        return wid
 
     def eventFilter(self, o, e):
         """
@@ -508,12 +520,39 @@ class TabWid(QWidget):
         self.ui.tabWidget.addTab(FindFuncTab(), f"Tab {self.genId()}")
         self.resetNewTabButton()
 
+    def cloneTab(self, index):
+        wid = self.ui.tabWidget.widget(index)
+        newwid = wid.clone()
+        newindex = self.ui.tabWidget.addTab(newwid, f"Tab {self.genId()}")
+        self.ui.tabWidget.tabBar().moveTab(newindex, index + 1)
+        self.resetNewTabButton()
+
     def tabmoved(self):
         self.resetNewTabButton()
 
     def tabClicked(self, index):
-        if index == -1 or self.ui.tabWidget.tabBar().count() <= 1:
-            self.addNewTab()
+        if QApplication.mouseButtons() & Qt.RightButton:
+            if index == -1 or self.ui.tabWidget.tabBar().count() <= 1:
+                return
+            menu = QMenu("tabmenu", self)
+
+            cmd = lambda self, func=self.cloneTab: func(index)
+            act = QtWidgets.QAction("clone", self)
+            act.triggered.connect(cmd)
+            menu.addAction(act)
+            cmd = lambda self, func=self.tabDoubleClicked: func(index)
+            act = QtWidgets.QAction("rename", self)
+            act.triggered.connect(cmd)
+            menu.addAction(act)
+            cmd = lambda self, func=self.closeTabReq: func(index)
+            act = QtWidgets.QAction("close", self)
+            act.triggered.connect(cmd)
+            menu.addAction(act)
+
+            menu.popup(QCursor.pos())
+        elif QApplication.mouseButtons() & Qt.LeftButton:
+            if index == -1 or self.ui.tabWidget.tabBar().count() <= 1:
+                self.addNewTab()
 
     def tabDoubleClicked(self, index):
         title = self.ui.tabWidget.tabBar().tabText(index)
