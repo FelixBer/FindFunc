@@ -320,9 +320,14 @@ class RuleBytePattern(Rule):
 
     @staticmethod
     def is_raw_pattern(pattern: str) -> bool:
+        """
+        returns True if the pattern string is a valid byte patter, False otherwise.
+        Note: We reject single numbers (e.g 0x12, patternsize 1). If this is really what is desired,
+        the user has to enter "0x12 ??" or fool us with a space.
+        """
         try:
-            pattern = pattern.replace(" ", "").replace("??", "")
-            return len(bytes.fromhex(pattern)) > 1 and len(pattern) > 2
+            cleaned = pattern.replace(" ", "").replace("??", "")
+            return len(bytes.fromhex(cleaned)) > 0 and len(pattern) > 2
         except ValueError:
             return False
 
