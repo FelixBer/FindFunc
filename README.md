@@ -294,6 +294,8 @@ A brief word on performance:
 
 * jcc pseudo-mnemonic
 * Allow named locations in CodeRules ('call memset')
+* undo/redo
+* progress bar
 * 'ignore all following operands' option
 * Rule for parameters to API calls inside function
 * Rule for parent/callsite/child function requirements
