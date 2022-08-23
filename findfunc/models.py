@@ -138,12 +138,9 @@ class RuleModel(QtCore.QAbstractTableModel):
         if role == Qt.ForegroundRole:
             d = self.mydata[index.row()]
             if not d.enabled:
-                return QtGui.QBrush(Qt.gray)
-            return None
-        if role == Qt.BackgroundRole:
-            d = self.mydata[index.row()]
-            if d.enabled and d.inverted:
-                return QtGui.QBrush(QColor(Qt.cyan).lighter())
+                return Qt.gray
+            if d.inverted:
+                return Qt.red
             return None
         if role == Qt.ToolTipRole:
             if col == self.col_data:
@@ -153,6 +150,8 @@ class RuleModel(QtCore.QAbstractTableModel):
             return None
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter
+        if role == Qt.BackgroundRole:
+            return None
         if role == Qt.CheckStateRole:
             return None
         return None
