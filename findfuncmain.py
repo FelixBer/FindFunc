@@ -19,7 +19,7 @@ except:
     print("not in ida")
 
 if inida:
-    from findfunc.advanced_copy import copy_all_bytes, copy_bytes_no_imm, copy_only_opcodes, copy_only_disasm
+    from findfunc.advanced_copy import copy_all_bytes, copy_bytes_no_imm, copy_only_opcodes, copy_only_disasm, copy_opcodes_and_imm
 
 __AUTHOR__ = 'feber'
 
@@ -61,6 +61,7 @@ class FindFunc(idaapi.plugin_t):
 
     ACTION_COPY_BYTES = "feber:copy_bytes"
     ACTION_COPY_OPC = "feber:copy_opc"
+    ACTION_COPY_OPC_IMM = "feber:copy_opc_imm"
     ACTION_COPY_NO_IMM = "feber:copy_no_imm"
     ACTION_COPY_DISASM = "feber:copy_disasm"
     ACTION_FFOPEN = "feber:ffopen"
@@ -87,6 +88,15 @@ class FindFunc(idaapi.plugin_t):
             ACActionHandler(copy_only_opcodes),
             "ctrl+alt+o",  # hotkey
             "copy selected opcodes as hex, mask out non-opcode bytes",
+            31
+        )
+        assert idaapi.register_action(action_desc), "Action registration failed"
+        action_desc = idaapi.action_desc_t(
+            self.ACTION_COPY_OPC_IMM,
+            "copy opcodes and immediates",
+            ACActionHandler(copy_opcodes_and_imm),
+            "ctrl+alt+o+i",  # hotkey
+            "copy instruction bytes, mask everything but opcodes + immediates",
             31
         )
         assert idaapi.register_action(action_desc), "Action registration failed"
@@ -138,6 +148,7 @@ class FindFunc(idaapi.plugin_t):
         self.hooks.unhook()
         idaapi.unregister_action(self.ACTION_COPY_BYTES)
         idaapi.unregister_action(self.ACTION_COPY_OPC)
+        idaapi.unregister_action(self.ACTION_COPY_OPC_IMM)
         idaapi.unregister_action(self.ACTION_COPY_NO_IMM)
         idaapi.unregister_action(self.ACTION_COPY_DISASM)
         idaapi.unregister_action(self.ACTION_FFOPEN)
@@ -236,12 +247,17 @@ class ACUiHook(idaapi.UI_Hooks):
             idaapi.attach_action_to_popup(
                 widget,
                 popup,
-                FindFunc.ACTION_COPY_NO_IMM,
+                FindFunc.ACTION_COPY_OPC,
             )
             idaapi.attach_action_to_popup(
                 widget,
                 popup,
-                FindFunc.ACTION_COPY_OPC,
+                FindFunc.ACTION_COPY_OPC_IMM,
+            )
+            idaapi.attach_action_to_popup(
+                widget,
+                popup,
+                FindFunc.ACTION_COPY_NO_IMM,
             )
             idaapi.attach_action_to_popup(
                 widget,

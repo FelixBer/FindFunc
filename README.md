@@ -249,6 +249,15 @@ will be copied as
 
     b8 ?? ?? ?? ?? 68 ?? ?? ?? ?? 66 89 ?? ?? ??
 
+### Copy opcodes + immediates
+
+A combination that keeps opcode and immediates, but masks e.g. mod r/m.
+Note that this keeps opcodes even if they mandate a specific registers, e.g.
+
+    B8 44332211      mov eax,11223344
+
+
+
 Note: This is a "best effort" using IDAs API, thus there may be few cases where it only works partially.
 For a 100% correct solution we would have to ship a dedicated x86 disasm library.
 

@@ -283,6 +283,54 @@ def copy_only_opcodes():
     copy_to_clip(result)
 
 
+
+### copy opcodes + imm (mask regs + size)
+
+
+def copy_opcodes_and_imm():
+    """
+    Copy alls instruction bytes as hex string to clipboard,
+    masking out anything that is not opcode or immediate
+    e.g. 11 ?? ?? ?? 11 22 33 44
+    """
+    start = idc.read_selection_start()
+    end = idc.read_selection_end()
+    if idaapi.BADADDR in (start, end):
+        ea = idc.here()
+        start = idaapi.get_item_head(ea)
+        end = idaapi.get_item_end(ea)
+    result = ""
+    processed = 0
+    while start + processed < end:
+        ins = idautils.DecodeInstruction(start + processed)
+        if not ins:
+            processed += 1
+            continue
+        processed += ins.size
+        # hacky!
+        bytedata = list(ida_bytes.get_bytes(ins.ea, ins.size))
+        immlen = get_bytes_without_imm(ins).count("??")
+        # mask everything except imm
+        for i in range(ins.size - immlen):
+            bytedata[i] = "??"
+        # overwrite opcodes
+        opc = getopc(ins)
+        bytedata[0:len(opc)] = opc
+        for x in bytedata:
+            if x == "??":
+                result += " ??"
+            else:
+                result += " {:02x}".format(x)
+
+    result = result.strip()
+    if logresult:
+        print("copy_opcodes_and_imm: ", result)
+    copy_to_clip(result)
+
+
+
+### copy disasm
+
 def copy_only_disasm():
     """
     Copy all instructions as diassembly as provided by IDA
