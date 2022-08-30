@@ -296,6 +296,8 @@ A brief word on performance:
 * Allow named locations in CodeRules ('call memset')
 * undo/redo
 * progress bar
+* middle-click to close tabs
+* tab menu: close all but this
 * 'ignore all following operands' option
 * Rule for parameters to API calls inside function
 * Rule for parent/callsite/child function requirements
