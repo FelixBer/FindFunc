@@ -238,7 +238,7 @@ class RuleImmediate(Rule):
         self.imm = InstrWildcard.parse_int(imm)
 
     def __repr__(self):
-        return f"RuleImmediate({self.imm})"
+        return f"RuleImmediate({self.imm:#x})"
 
     def get_data(self):
         return hex(self.imm)
