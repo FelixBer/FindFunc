@@ -16,17 +16,17 @@ FF will schedule the rules in a smart order to minimize processing time.
 Feature overview:
 
 * Currently 6 Rules available, see below
-* Code matching respects Addressing-Size-Prefix and Operand-Size-Prefix
 * Aware of function chunks
 * Smart scheduling of rules for performance
 * Saving/Loading rules from/to file in simple ascii format
-* Several independent Tabs for experimentation
-* Copying rules between Tabs via clipboard (same format as file format)
+* Several independent tabs for experimentation
+* Copying rules between tabs via clipboard (same format as file format)
 * Saving entire session (all tabs) to file
 * Advanced copying of instruction bytes (all, opcodes only, all except immediates, ...)
 * Clone tabs for quick experiments with refining results
+* Code matching respects Addressing-Size-Prefix and Operand-Size-Prefix
 
-Button "Search Functions" clears existing results and starts a fresh search,
+Button "Find Functions" clears existing results and starts a fresh search,
 "Refine Results" considers only results of the previous search.
 
 ### Advanced Binary Copying
@@ -36,6 +36,7 @@ A secondary feature of FF is the option to copy binary representation of instruc
 * copy all -> copy all bytes to the clipboard
 * copy without immediates -> blank out (AA ?? BB) any immediate values in the instruction bytes
 * opcode only -> will blank out everything except the actual opcode(s) of the instruction (and prefixes)
+* ...
 
 See "advanced copying" section below for details.
 This feature nicely complements the Byte Pattern rule!
