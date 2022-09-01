@@ -260,6 +260,7 @@ Note that this keeps opcodes even if they mandate a specific registers, e.g.
 
     B8 44332211      mov eax,11223344
 
+will keep the opcode B8.
 
 
 Note: This is a "best effort" using IDAs API, thus there may be few cases where it only works partially.
@@ -295,6 +296,7 @@ A brief word on performance:
 
 * jcc pseudo-mnemonic
 * Allow named locations in CodeRules ('call memset')
+* add rule xref in/out
 * undo/redo
 * progress bar
 * middle-click to close tabs
