@@ -25,7 +25,7 @@ __AUTHOR__ = 'feber'
 
 PLUGIN_NAME = "FindFunc (x86/x64)"
 PLUGIN_HOTKEY = 'ctrl+alt+f'
-VERSION = '1.3'
+VERSION = '1.4'
 WINDOWTITLE = f'{PLUGIN_NAME} {VERSION}'
 INFOSTR = f'For usage see: ' '<a href="https://github.com/FelixBer/FindFunc">https://github.com/FelixBer/FindFunc</a>'
 
