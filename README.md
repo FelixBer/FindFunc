@@ -1,7 +1,9 @@
 # FindFunc: Advanced Filtering/Finding of Functions in IDA Pro
 
 
-FindFunc is an IDA Pro plugin to find code functions that contain a certain assembly or byte pattern, reference a certain name or string, or conform to various other constraints. This is not a competitor to tools like Diaphora or BinNavi, but it is ideal to find a known function in a new binary for cases where classical bindiffing fails.
+FindFunc is an IDA Pro plugin to find code functions that contain a certain assembly or byte pattern, reference a certain name or string, or conform to various other constraints. 
+
+FindFunc won third place in the [2022 HexRays IDA Pro Plugin Contest](https://hex-rays.com/contests_details/contest2022)!
 
 
 ![ffmain](./img/ffmain.png)
