@@ -14,6 +14,7 @@ try:
     import ida_name
     import ida_allins
     import ida_ua
+    import ida_ida #IDA 9
 except:
     inida = False
 
@@ -142,10 +143,17 @@ class Config:
         # image end
         self.endva = idaapi.get_last_seg().end_ea
         # size of pointer of current proc module
-        info = idaapi.get_inf_structure()
-        if info.is_64bit():
+        try:
+            # since IDA 9
+            is64 = ida_ida.idainfo_is_64bit()
+            is32 = ida_ida.idainfo_is_32bit()
+        except:
+            info = idaapi.get_inf_structure()
+            is64 = info.is_64bit()
+            is32 = info.is_32bit()
+        if is64:
             self.ptrsize = 8
-        elif info.is_32bit():
+        elif is32:
             self.ptrsize = 4
         else:
             assert "processor must be x64 or x86"

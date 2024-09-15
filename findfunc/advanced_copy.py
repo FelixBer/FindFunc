@@ -6,6 +6,7 @@ try:
     import ida_bytes
     import ida_ua
     import ida_pro
+    import ida_ida #IDA 9
 except:
     inida = False
 
@@ -23,8 +24,6 @@ logresult = True
 def copy_to_clip(data):
     QApplication.clipboard().setText(data)
 
-
-is64 = idaapi.get_inf_structure().is_64bit()
 
 ### copy all
 
@@ -59,7 +58,16 @@ def int_as_bytes(integer, size):
         return None
 
 
+#unused
 def is_neg(addr):
+    try:
+        # since IDA 9
+        is64 = ida_ida.idainfo_is_64bit()
+        is32 = ida_ida.idainfo_is_32bit()
+    except:
+        info = idaapi.get_inf_structure()
+        is64 = info.is_64bit()
+        is32 = info.is_32bit()
     if is64:
         return addr & 0x8000000000000000
     else:
