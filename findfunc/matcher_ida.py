@@ -729,6 +729,10 @@ class MatcherIda:
         if pos_name_rules or neg_name_rules:
             for name in idautils.Names():
                 va, n = name
+                if not n:
+                    if self.info.debug:
+                        print(f"debug: skipping name at {hex(name)} because it is None")
+                    continue
                 for rule in pos_name_rules + neg_name_rules:
                     if rule.matches(n):
                         rule.refs += list(idautils.CodeRefsTo(va, False))
