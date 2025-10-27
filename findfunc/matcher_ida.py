@@ -3,6 +3,11 @@ from typing import Iterable
 
 from findfunc.backbone import *
 
+try:
+    from PyQt5.QtWidgets import QApplication
+except ImportError:
+    QApplication = None
+
 inida = True
 try:
     # from idaapi import PluginForm
@@ -264,6 +269,8 @@ class MatcherIda:
 
     # user has cancelled the search
     def iscancelled(self) -> bool:
+        if QApplication:
+            QApplication.processEvents()
         self.wascancelled = idaapi.user_cancelled()
         if self.wascancelled:
             print("Search cancelled...")
