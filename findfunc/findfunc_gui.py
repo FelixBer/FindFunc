@@ -5,6 +5,7 @@ import pickle
 import cProfile
 import io
 import copy
+import traceback
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QWidget, QMessageBox, QLineEdit, QApplication, QTabBar, QMenu, QFileDialog
@@ -381,8 +382,13 @@ class FindFuncTab(QWidget):
             profiler.enable()
         starttime = time.perf_counter()
         idaapi.show_wait_box("FindFunc: Finding Functions... ")  # todo: maybe use ida_kernwin.replace_wait_box
-        results = self.matcher.do_match(self.model.mydata, limitto)
-        idaapi.hide_wait_box()
+        try:
+            results = self.matcher.do_match(self.model.mydata, limitto)
+        except Exception as ex:
+            QtWidgets.QInputDialog.getMultiLineText(self, "Error during search", "Exception:", traceback.format_exc())
+            raise
+        finally:
+            idaapi.hide_wait_box()
         self.resultmodel.set_items([ResultModel.Result(fn.va, fn.size, len(fn.chunks) - 1, fn.name, fn.lastmatch) for fn in results])
         self.ui.tableresults.resizeColumnsToContents()
         timetaken = time.perf_counter() - starttime

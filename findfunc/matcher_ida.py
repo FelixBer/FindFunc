@@ -3,6 +3,11 @@ from typing import Iterable
 
 from findfunc.backbone import *
 
+try:
+    from PyQt5.QtWidgets import QApplication
+except ImportError:
+    QApplication = None
+
 inida = True
 try:
     # from idaapi import PluginForm
@@ -264,6 +269,8 @@ class MatcherIda:
 
     # user has cancelled the search
     def iscancelled(self) -> bool:
+        if QApplication:
+            QApplication.processEvents()
         self.wascancelled = idaapi.user_cancelled()
         if self.wascancelled:
             print("Search cancelled...")
@@ -722,6 +729,10 @@ class MatcherIda:
         if pos_name_rules or neg_name_rules:
             for name in idautils.Names():
                 va, n = name
+                if not n:
+                    if self.info.debug:
+                        print(f"debug: skipping name at {hex(name)} because it is None")
+                    continue
                 for rule in pos_name_rules + neg_name_rules:
                     if rule.matches(n):
                         rule.refs += list(idautils.CodeRefsTo(va, False))
