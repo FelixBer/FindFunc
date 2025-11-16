@@ -225,7 +225,7 @@ class Func:
                 yield ins
 
     @staticmethod
-    def adresses_to_funcs(refs: Iterable[int]):
+    def adresses_to_funcs(refs: Iterable):
         """
         converts list of address that may be anywhere in a function to Func functions.
         filtes against duplicates
@@ -246,7 +246,7 @@ class Func:
             yield func
 
     @staticmethod
-    def adress_to_func(adr: int):
+    def adress_to_func(adr):
         """
         helper to convert a single function from address
         :param adr: va anywhere in function
@@ -266,6 +266,21 @@ class MatcherIda:
         self.info = Config()
         self.idastrings = None
         self.wascancelled = False
+
+    @staticmethod
+    def _bin_search_compat(start_ea, end_ea, pattern, flags):
+        """
+        Compatibility wrapper for bin_search that falls back to bin_search3
+        for different IDA Pro versions. Handles both tuple and integer return values.
+        """
+        if hasattr(ida_bytes, 'bin_search'):
+            result = ida_bytes.bin_search(start_ea, end_ea, pattern, flags)
+            return result[0] if isinstance(result, tuple) else result
+        elif hasattr(ida_bytes, 'bin_search3'):
+            result = ida_bytes.bin_search3(start_ea, end_ea, pattern, flags)
+            return result[0] if isinstance(result, tuple) else result
+        else:
+            raise AttributeError("Neither bin_search nor bin_search3 found in ida_bytes module")
 
     # user has cancelled the search
     def iscancelled(self) -> bool:
@@ -315,7 +330,7 @@ class MatcherIda:
                 continue
             lastva = self.info.startva
             while lastva != idaapi.BADADDR:
-                lastva = ida_bytes.bin_search(lastva + 1, self.info.endva, r.patterncompiled, idaapi.BIN_SEARCH_FORWARD)
+                lastva = self._bin_search_compat(lastva + 1, self.info.endva, r.patterncompiled, idaapi.BIN_SEARCH_FORWARD)
                 if lastva != idaapi.BADADDR:
                     yield lastva
 
@@ -390,7 +405,7 @@ class MatcherIda:
                 return
             for r in rules:
                 for chunk in func.get_as_chunks():
-                    hit = ida_bytes.bin_search(chunk[0], chunk[1], r.patterncompiled, idaapi.BIN_SEARCH_FORWARD)
+                    hit = self._bin_search_compat(chunk[0], chunk[1], r.patterncompiled, idaapi.BIN_SEARCH_FORWARD)
                     isinfunc = hit != idaapi.BADADDR
                     if isinfunc:
                         passed = not r.inverted

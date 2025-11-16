@@ -134,25 +134,29 @@ class FindFuncTab(QWidget):
                 # print(e.modifiers(), e.key(), e.text(), str(e.type()), e.matches(QKeySequence.Copy))
                 e.accept()
                 for a in self.ui.tableview.actions():
-                    if a.shortcut() == QKeySequence(e.key() | int(e.modifiers())):
+                    modifiers = e.modifiers().value if hasattr(e.modifiers(), 'value') else int(e.modifiers())
+                    if a.shortcut() == QKeySequence(e.key() | modifiers):
                         a.trigger()
                 return True
             if o is self.ui.tableresults:
                 e.accept()
                 for a in self.ui.tableresults.actions():
-                    if a.shortcut() == QKeySequence(e.key() | int(e.modifiers())):
+                    modifiers = e.modifiers().value if hasattr(e.modifiers(), 'value') else int(e.modifiers())
+                    if a.shortcut() == QKeySequence(e.key() | modifiers):
                         a.trigger()
                 return True
         if e.type() == QEvent.KeyPress:
             if o is self.ui.tableview:
                 for a in self.ui.tableview.actions():
-                    if a.shortcut() == QKeySequence(e.key() | int(e.modifiers())):
+                    modifiers = e.modifiers().value if hasattr(e.modifiers(), 'value') else int(e.modifiers())
+                    if a.shortcut() == QKeySequence(e.key() | modifiers):
                         e.accept()
                         return True
             if o is self.ui.tableresults:
                 e.accept()
                 for a in self.ui.tableresults.actions():
-                    if a.shortcut() == QKeySequence(e.key() | int(e.modifiers())):
+                    modifiers = e.modifiers().value if hasattr(e.modifiers(), 'value') else int(e.modifiers())
+                    if a.shortcut() == QKeySequence(e.key() | modifiers):
                         e.accept()
                         return True
         return False
