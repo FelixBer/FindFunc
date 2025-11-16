@@ -49,12 +49,14 @@ This feature nicely complements the Byte Pattern rule!
 ## Building and Installation
 
 FindFunc is an IDA Pro python plugin without external package dependencies.
-It can be installed by downloading the repository and copying file 'findfuncmain.py' and folder 'findfunc' to your IDA Pro plugin directory. No building is required.
+It can be installed by downloading the repository and copying file 'findfuncmain.py' and folder 'findfunc' to your IDA Pro plugin directory.
+For IDA 9.0+ the repository can also be cloned directly into the plugin directory.
+Either way no building is required.
 
 
-Requirements: IDA Pro 7.x (7.6+) with python3 environment.
+Requirements: IDA Pro 8.x (8.3+) with python3 environment.
 FindFunc is designed for x86/x64 architecture only.
-It has been tested with IDA 7.6/7.7, python 3.9 and IDAPython 7.4.0 on Windows 10.
+It has been tested with IDA 8.3 - 9.2, python 3.11 on Windows 10 + 11
 
 
 
